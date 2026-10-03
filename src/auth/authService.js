@@ -1,5 +1,6 @@
 const STORAGE_KEY = 'weathergpt_auth_session';
 const USERS_STORAGE_KEY = 'weathergpt_registered_users';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const DEFAULT_USERS = [
   {
@@ -38,7 +39,7 @@ function saveStoredUsers(users) {
 export const authService = {
   async syncWithBackend(userPayload) {
     try {
-      const res = await fetch('http://localhost:5000/api/user/sync', {
+      const res = await fetch(`${API_BASE_URL}/api/user/sync`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userPayload)
@@ -68,7 +69,7 @@ export const authService = {
       // Fallback: try backend-verified login (Supabase + passwordStore)
       let backendUser = null;
       try {
-        const res = await fetch('http://localhost:5000/api/user/login', {
+        const res = await fetch(`${API_BASE_URL}/api/user/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: normalizedEmail, password })
@@ -172,7 +173,7 @@ export const authService = {
     }
 
     try {
-      const res = await fetch('http://localhost:5000/api/user/admin-login', {
+      const res = await fetch(`${API_BASE_URL}/api/user/admin-login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

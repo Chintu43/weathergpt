@@ -22,7 +22,7 @@ export function getEmailProviderStatus() {
 /**
  * Builds HTML and text versions of the Weather Email.
  */
-function compileEmailBody(message, dashboardUrl, includeDashboardLink) {
+function compileEmailBody(message, dashboardUrl, includeDashboardLink, buttonText = 'Open Live Dashboard', buttonHeading = 'Check live WeatherGPT updates:') {
   const safeMessage = (message || '').trim();
   const paragraphs = safeMessage.split('\n\n').map(p => p.trim()).filter(Boolean);
 
@@ -30,11 +30,13 @@ function compileEmailBody(message, dashboardUrl, includeDashboardLink) {
     .map(p => `<p style="margin: 0 0 14px 0; line-height: 1.6; color: #1e293b; font-size: 15px;">${p.replace(/\n/g, '<br/>')}</p>`)
     .join('');
 
+  const headingHtml = buttonHeading ? `<p style="margin: 0 0 10px 0; color: #64748b; font-size: 13px;">${buttonHeading}</p>` : '';
+
   const dashboardBlockHtml = includeDashboardLink && dashboardUrl
     ? `
       <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid #e2e8f0; text-align: center;">
-        <p style="margin: 0 0 10px 0; color: #64748b; font-size: 13px;">Check live WeatherGPT updates:</p>
-        <a href="${dashboardUrl}" style="display: inline-block; background: #0284c7; color: #ffffff; text-decoration: none; padding: 10px 22px; border-radius: 8px; font-weight: 600; font-size: 14px;">Open Live Dashboard</a>
+        ${headingHtml}
+        <a href="${dashboardUrl}" style="display: inline-block; background: #0284c7; color: #ffffff; text-decoration: none; padding: 10px 22px; border-radius: 8px; font-weight: 600; font-size: 14px;">${buttonText}</a>
       </div>
     `
     : '';
@@ -57,7 +59,7 @@ function compileEmailBody(message, dashboardUrl, includeDashboardLink) {
             ${dashboardBlockHtml}
           </div>
           <div style="background: #f1f5f9; padding: 14px 24px; text-align: center; border-top: 1px solid #e2e8f0;">
-            <p style="margin: 0; color: #94a3b8; font-size: 11px;">You are receiving this weather intelligence notification from WeatherGPT.</p>
+            <p style="margin: 0; color: #94a3b8; font-size: 11px;">You are receiving this notification from WeatherGPT.</p>
           </div>
         </div>
       </body>
@@ -66,7 +68,8 @@ function compileEmailBody(message, dashboardUrl, includeDashboardLink) {
 
   let text = safeMessage;
   if (includeDashboardLink && dashboardUrl) {
-    text += `\n\nCheck live WeatherGPT updates:\n${dashboardUrl}`;
+    if (buttonHeading) text += `\n\n${buttonHeading}`;
+    text += `\n${dashboardUrl}`;
   }
 
   return { html, text };
@@ -85,7 +88,9 @@ export async function sendWeatherEmail({
   subject = 'WeatherGPT Weather Update',
   message = '',
   includeDashboardLink = true,
-  dashboardUrl = 'http://localhost:5173/home'
+  dashboardUrl = 'http://localhost:5173/home',
+  buttonText = 'Open Live Dashboard',
+  buttonHeading = 'Check live WeatherGPT updates:'
 }) {
   const apiKey = (process.env.RESEND_API_KEY || '').trim();
   const fromEmail = (process.env.WEATHERGPT_EMAIL_FROM || 'onboarding@resend.dev').trim();
@@ -119,7 +124,7 @@ export async function sendWeatherEmail({
     };
   }
 
-  const { html, text } = compileEmailBody(message, dashboardUrl, includeDashboardLink);
+  const { html, text } = compileEmailBody(message, dashboardUrl, includeDashboardLink, buttonText, buttonHeading);
 
   console.log(`[EmailService] Dispatching emails via Resend to ${recipients.length} recipients...`);
 

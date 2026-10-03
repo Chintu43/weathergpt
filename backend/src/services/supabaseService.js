@@ -26,7 +26,7 @@ export async function getUserByEmail(email) {
   const normalizedEmail = (email || '').trim().toLowerCase();
   const { data, error } = await supabase
     .from('users')
-    .select('name, email, phone_number, phone_verified, sms_enabled, city, district, state, country, latitude, longitude, role, created_at, updated_at')
+    .select('name, email, phone_number, phone_verified, sms_enabled, city, district, state, country, latitude, longitude, role, password_hash, created_at, updated_at')
     .eq('email', normalizedEmail)
     .maybeSingle();
 
@@ -36,7 +36,13 @@ export async function getUserByEmail(email) {
   }
 
   if (data) {
-    data.password = passwordStore.get(normalizedEmail);
+    // Primary password source: Supabase public.users.password_hash
+    // Temporary fallback: Local passwordStore for legacy users whose password_hash is NULL
+    if (data.password_hash) {
+      data.password = data.password_hash;
+    } else {
+      data.password = passwordStore.get(normalizedEmail);
+    }
   }
 
   return data;
@@ -44,6 +50,7 @@ export async function getUserByEmail(email) {
 
 /**
  * Updates user password in Supabase public.users while preserving role and existing profile fields.
+ * Persists bcrypt hash in Supabase public.users.password_hash (primary store).
  */
 export async function updateUserPassword(email, passwordHash) {
   if (!supabase) {
@@ -57,25 +64,26 @@ export async function updateUserPassword(email, passwordHash) {
     throw new Error('User not found.');
   }
 
-  // Save bcrypt hash in backend password store
-  passwordStore.set(normalizedEmail, passwordHash);
-
-  // Update updated_at timestamp in Supabase
+  // Update password_hash and updated_at timestamp in Supabase
   const { data, error } = await supabase
     .from('users')
     .update({
+      password_hash: passwordHash,
       updated_at: new Date().toISOString()
     })
     .eq('email', normalizedEmail)
-    .select('name, email, phone_number, phone_verified, sms_enabled, city, district, state, country, role, created_at, updated_at')
+    .select('name, email, phone_number, phone_verified, sms_enabled, city, district, state, country, role, password_hash, created_at, updated_at')
     .single();
 
   if (error) {
-    console.warn('[SupabaseService] Warning updating updated_at timestamp in Supabase:', error.message);
-    return { ...user, password: passwordHash };
+    console.error('[SupabaseService] Error updating password_hash in Supabase:', error.message);
+    throw new Error(`Failed to update password in Supabase: ${error.message}`);
   }
 
-  return { ...data, password: passwordHash };
+  // Temporary fallback: save in local passwordStore for local migration compatibility
+  passwordStore.set(normalizedEmail, passwordHash);
+
+  return { ...data, password: data.password_hash };
 }
 
 /**

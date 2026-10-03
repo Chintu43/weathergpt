@@ -5,6 +5,8 @@
  * Nationwide summaries are derived from live observations, never hardcoded events.
  */
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const WMO_CODES = {
   0: { label: 'Clear Sky', icon: 'Sun' },
   1: { label: 'Mainly Clear', icon: 'SunMedium' },
@@ -531,7 +533,7 @@ export const weatherService = {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/travel/plan', {
+      const response = await fetch(`${API_BASE_URL}/api/travel/plan`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -714,7 +716,7 @@ export const weatherService = {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/farmer/advice', {
+      const response = await fetch(`${API_BASE_URL}/api/farmer/advice`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ state, district, question: q })

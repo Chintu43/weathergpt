@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import { getUserByEmail, updateUserPassword } from './supabaseService.js';
+import { sendWeatherEmail } from './emailService.js';
 
 // In-memory store for active reset tokens: tokenHash -> { email, expiresAt, used, usedAt }
 const resetTokenStore = new Map();
@@ -8,6 +9,7 @@ const resetTokenStore = new Map();
 /**
  * Generates a secure, single-use, 30-minute reset token for an email address.
  * Uses SHA-256 token hashing so plaintext tokens are never stored.
+ * Sends the password reset link to the user's email address via Resend.
  * Always returns a generic safe message to prevent account enumeration.
  */
 export async function requestPasswordReset(email) {
@@ -49,11 +51,22 @@ export async function requestPasswordReset(email) {
     }
     const resetUrl = `${origin}/reset-password?token=${rawToken}&email=${encodeURIComponent(normalizedEmail)}`;
 
-    console.log(`==================================================`);
-    console.log(`  [PasswordReset] Password Reset Requested for: ${normalizedEmail}`);
-    console.log(`  [PasswordReset] Reset Link: ${resetUrl}`);
-    console.log(`  [PasswordReset] Note: Link expires in 30 minutes.`);
-    console.log(`==================================================`);
+    console.log(`[PasswordReset] Dispatching password reset email to ${normalizedEmail}...`);
+
+    try {
+      await sendWeatherEmail({
+        recipients: [{ email: normalizedEmail, name: dbUser.name || 'User' }],
+        subject: 'Reset Your WeatherGPT Password',
+        message: `Hello ${dbUser.name || 'User'},\n\nYou requested a password reset for your WeatherGPT account.\n\nPlease click the button below to set a new password:\n\n${resetUrl}\n\nNote: This link is valid for 30 minutes. If you did not request a password reset, you can safely ignore this email.`,
+        includeDashboardLink: true,
+        dashboardUrl: resetUrl,
+        buttonText: 'Reset Password',
+        buttonHeading: 'Click below to set a new password:'
+      });
+      console.log(`[PasswordReset] Password reset email successfully sent to ${normalizedEmail}.`);
+    } catch (emailErr) {
+      console.error(`[PasswordReset] Failed to send reset email to ${normalizedEmail}:`, emailErr.message);
+    }
   } else {
     console.log(`[PasswordReset] Request for unregistered email: ${normalizedEmail} (suppressed for security)`);
   }

@@ -1,3 +1,10 @@
+/**
+ * TEMPORARY LEGACY PASSWORD STORE
+ * NOTE: This local JSON store is kept temporarily for backward compatibility 
+ * during migration of password hashes to Supabase public.users.password_hash.
+ * It will be removed once all user password hashes are fully migrated to Supabase.
+ */
+
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';

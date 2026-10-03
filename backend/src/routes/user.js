@@ -160,6 +160,16 @@ router.post('/admin-login', async (req, res) => {
       });
     }
 
+    // If authenticated using legacy passwordStore hash, migrate it to Supabase
+    if (isPasswordValid && dbUser.password && !dbUser.password_hash) {
+      try {
+        await updateUserPassword(normalizedEmail, dbUser.password);
+        console.log(`[UserRoute] Migrated legacy admin password hash to Supabase for ${normalizedEmail}`);
+      } catch (migErr) {
+        console.warn('[UserRoute] Admin legacy password migration notice:', migErr.message);
+      }
+    }
+
     // 3. Update phone number if provided
     if (phone_number && phone_number.trim()) {
       try {
@@ -269,7 +279,7 @@ router.post('/login', async (req, res) => {
     const normalizedEmail = email.trim().toLowerCase();
     const dbUser = await getUserByEmail(normalizedEmail);
 
-    if (!dbUser) {
+    if (!dbUser || !dbUser.password) {
       return res.status(401).json({
         success: false,
         error: 'INVALID_CREDENTIALS',
@@ -277,21 +287,20 @@ router.post('/login', async (req, res) => {
       });
     }
 
-    // Verify password if a hash exists in Supabase
-    if (dbUser.password) {
-      const isMatch = await bcrypt.compare(password, dbUser.password);
-      if (!isMatch) {
-        return res.status(401).json({
-          success: false,
-          error: 'INVALID_CREDENTIALS',
-          message: 'Invalid email or password.'
-        });
-      }
-    } else {
-      // Legacy user migration: Hash input password on first backend login
+    const isMatch = await bcrypt.compare(password, dbUser.password);
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        error: 'INVALID_CREDENTIALS',
+        message: 'Invalid email or password.'
+      });
+    }
+
+    // If authenticated using legacy passwordStore hash (password_hash is NULL in Supabase), migrate it to Supabase
+    if (!dbUser.password_hash && dbUser.password) {
       try {
-        const passwordHash = await bcrypt.hash(password, 10);
-        await updateUserPassword(normalizedEmail, passwordHash);
+        await updateUserPassword(normalizedEmail, dbUser.password);
+        console.log(`[UserRoute] Migrated legacy password hash to Supabase for ${normalizedEmail}`);
       } catch (migErr) {
         console.warn('[UserRoute] Legacy password hash migration notice:', migErr.message);
       }
