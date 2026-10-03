@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# Production build
+dist/
+
+# Temporary browser / Chrome data
+.temp_chrome_user_data/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/editor files
+.vscode/
+.idea/
+
+# Temporary/generated files
+*.tmp
+
+# Development screenshots and test output
+*_shot.png
+*_rendered_dom.txt
+dom_output.txt
+test_*.txt
+
+# Local authentication data
+backend/data/passwords.json

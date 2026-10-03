@@ -1,0 +1,1040 @@
+/* ==========================================================================
+   WEATHERGPT CINEMATIC STAGE & SCROLL TRANSITIONS — REFINED ARCHITECTURE
+   ========================================================================== */
+
+/* ─── FIXED HEADER AT THE TOP (ALWAYS ON TOP, ZERO BLUR) ──────────────── */
+.home-fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 68px;
+  z-index: 50;
+  background: rgba(14, 24, 38, 0.82);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 28px;
+  box-sizing: border-box;
+}
+
+.fixed-header-inner {
+  width: 100%;
+  max-width: 1440px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fixed-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Small brand sun beside WEATHERGPT title */
+.brand-sun-wrapper {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.brand-sun-svg {
+  display: block;
+  flex-shrink: 0;
+  animation: brandSunFloat 4s ease-in-out infinite;
+}
+@keyframes brandSunFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+@keyframes brandSunHaloPulse {
+  0%, 100% { opacity: 0.55; transform: scale(0.97); }
+  50% { opacity: 0.85; transform: scale(1.03); }
+}
+@keyframes brandSunCorePulse {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(251,191,36,0.5)); }
+  50% { filter: drop-shadow(0 0 8px rgba(251,191,36,0.85)); }
+}
+.brand-sun-halo {
+  transform-origin: 30px 30px;
+  animation: brandSunHaloPulse 3.5s ease-in-out infinite;
+}
+.brand-sun-core {
+  transform-origin: 30px 30px;
+  animation: brandSunCorePulse 3.5s ease-in-out infinite;
+}
+
+.fixed-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ─── MAIN CINEMATIC STAGE CONTAINER ─────────────────────────────────── */
+.home-cinematic-stage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 72px;  /* Clears fixed header (68px) */
+  padding-bottom: 76px; /* Clears bottom navigation (72px) */
+  padding-left: 28px;
+  padding-right: 28px;
+  box-sizing: border-box;
+  z-index: 2;
+  user-select: none;
+}
+
+/* ─── STRICT ZERO BLUR ENFORCEMENT ACROSS ALL HOME UI BOXES & CARDS ──── */
+.home-cinematic-stage *,
+.home-cinematic-stage *::before,
+.home-cinematic-stage *::after,
+.home-fixed-header,
+.home-fixed-header * {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Translucent, sharp, climate-themed cards (Zero blur) */
+.home-cinematic-stage .weather-timeline-card,
+.home-cinematic-stage .dash-rain-stat,
+.home-cinematic-stage .dash-simple-card,
+.home-cinematic-stage .dash-alert-summary-item,
+.home-cinematic-stage .left-card-glass,
+.home-cinematic-stage .dash-outdoor-banner,
+.home-cinematic-stage .dash-search-bar,
+.home-cinematic-stage .s0-metric-pill,
+.home-cinematic-stage .s0-state-box,
+.home-cinematic-stage .left-summary-box {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: rgba(16, 28, 44, 0.70) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* ─── CENTRAL TRANSITION IMAGE OVERLAY (DEAD CENTER OF VIEWPORT) ──────── */
+.cinematic-center-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 40;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.central-visual-box {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Materializing animation (image forms from center) */
+@keyframes weatherImageMaterialize {
+  0% {
+    opacity: 0;
+    transform: scale(0.75) translateY(15px);
+    filter: blur(8px);
+  }
+  60% {
+    opacity: 0.85;
+    filter: blur(3px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0px);
+  }
+}
+
+/* Dissolving animation (image slowly dissolves away) */
+@keyframes weatherImageDissolve {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.88) translateY(-12px);
+    filter: blur(6px);
+  }
+}
+
+.weather-visual-materializing {
+  animation: weatherImageMaterialize 1100ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  will-change: transform, opacity, filter;
+}
+
+.weather-visual-stable {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  filter: blur(0px);
+}
+
+.weather-visual-dissolving {
+  animation: weatherImageDissolve 900ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  will-change: transform, opacity, filter;
+}
+
+/* ─── STAGE SECTION WRAPPER & TRANSITIONS ────────────────────────────── */
+.stage-section-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* Outgoing content gently dims while next image forms */
+.content-outgoing {
+  opacity: 0.35;
+  transform: scale(0.99);
+  transition: opacity 500ms ease, transform 500ms ease;
+  pointer-events: none;
+}
+
+/* Completely hidden during image peak hold */
+.content-hidden {
+  opacity: 0;
+  transform: scale(0.98);
+  pointer-events: none;
+}
+
+/* Incoming content fades in as image dissolves */
+.content-incoming {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1), transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: auto;
+}
+
+/* Settled visible state */
+.content-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  transition: opacity 500ms ease;
+}
+
+/* ═════════════════════════════════════════════════════════════════════════
+   SECTION 0: TODAY'S WEATHER (OPEN, SPACIOUS, BREATHABLE FULL VIEWPORT)
+   NO HUGE RECTANGULAR DARK BOX. CONTENT FLOATS DIRECTLY OVER VIDEO.
+   ═════════════════════════════════════════════════════════════════════════ */
+.s0-open-layout {
+  width: 100%;
+  max-width: 1080px;
+  height: 100%;
+  max-height: calc(100vh - 155px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  text-align: center;
+  padding: 4px 16px 8px;
+  box-sizing: border-box;
+}
+
+/* Top Group: Large Left-Aligned Greeting & Left-Aligned Search Bar */
+.s0-top-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.s0-greeting-heading {
+  font-size: clamp(38px, 4.5vw, 54px); /* Desktop target: ~48-60px */
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+  margin: 0;
+  text-align: left;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.85);
+}
+
+.s0-feedback-msg {
+  font-size: 0.85rem;
+  color: #FCA5A5;
+  margin: 0;
+  text-align: left;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* Search Area (Left-Aligned directly below greeting) */
+.s0-search-area {
+  position: relative;
+  width: 100%;
+  max-width: 660px;
+  align-self: flex-start;
+}
+.s0-search-area .dash-search-bar {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Main Weather Content Group */
+.s0-weather-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
+/* Section label: "Today's Weather" */
+.s0-section-label {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 0 2px 0;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
+}
+
+/* Location name */
+.s0-location-name {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #E2E8F0;
+  margin: 0 0 4px 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+}
+
+/* Temperature Row */
+.s0-temp-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 2px 0;
+}
+.s0-weather-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.65));
+}
+.s0-temperature {
+  font-size: 4rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9), 0 0 30px currentColor;
+}
+
+/* Condition & Feels like */
+.s0-condition {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+}
+.s0-feels-like {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0 0 6px 0;
+  font-weight: 500;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.85);
+}
+
+/* 8 Individual Metric Pills in a 4×2 Grid */
+.s0-metric-pills {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  width: 100%;
+  max-width: 820px;
+  margin: 4px 0;
+}
+.s0-metric-pill {
+  padding: 8px 12px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  transition: transform 200ms ease;
+}
+.s0-metric-pill:hover {
+  transform: translateY(-2px);
+}
+.s0-pill-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #94A3B8;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.s0-pill-value {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+/* Forecast Line & Source Line */
+.s0-forecast-line {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #E2E8F0;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.85);
+  margin-top: 2px;
+}
+.s0-source-line {
+  font-size: 0.74rem;
+  color: #94A3B8;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.85);
+}
+
+.s0-scroll-hint-area {
+  display: flex;
+  justify-content: center;
+  padding-top: 2px;
+}
+
+.s0-state-box {
+  padding: 24px 32px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.s0-state-text {
+  font-size: 1rem;
+  color: #E2E8F0;
+  margin: 0;
+}
+.s0-state-hint {
+  font-size: 0.85rem;
+  color: #94A3B8;
+  margin: 0;
+}
+
+/* ═════════════════════════════════════════════════════════════════════════
+   SECTIONS 1 TO 4: CONTENT-FIRST LAYOUT
+   TOP: Section Title & Navigation Hint
+   LEFT: Context Briefing Card  |  RIGHT: Primary Data Content
+   ═════════════════════════════════════════════════════════════════════════ */
+.cinematic-section-container {
+  width: 100%;
+  max-width: 1400px;
+  max-height: calc(100vh - 160px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Section Header Bar */
+.cinematic-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 6px;
+  box-sizing: border-box;
+}
+
+.section-header-title {
+  font-size: 32px; /* 30-36px per requirement */
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  margin: 0;
+  line-height: 1.15;
+}
+
+.sec-1-title { color: #F1F5F9; text-shadow: 0 0 16px rgba(226, 232, 240, 0.35), 0 2px 10px rgba(0, 0, 0, 0.85); }
+.sec-2-title { color: #38BDF8; text-shadow: 0 0 18px rgba(56, 189, 248, 0.4), 0 2px 10px rgba(0, 0, 0, 0.85); }
+.sec-3-title { color: #2DD4BF; text-shadow: 0 0 18px rgba(45, 212, 191, 0.4), 0 2px 10px rgba(0, 0, 0, 0.85); }
+.sec-4-title { color: #C084FC; text-shadow: 0 0 20px rgba(192, 132, 252, 0.45), 0 2px 10px rgba(0, 0, 0, 0.85); }
+
+/* Two-Column Grid: LEFT BRIEFING (320px) | RIGHT DATA (Remaining ~1000px) */
+.cinematic-two-columns {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 22px;
+  width: 100%;
+  align-items: stretch;
+}
+
+/* Left Column: Context Card */
+.cinematic-left-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.left-card-glass {
+  border-radius: 16px;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  box-sizing: border-box;
+  justify-content: center;
+}
+
+.section-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  width: fit-content;
+}
+.badge-blue {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38BDF8;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+}
+.badge-teal {
+  background: rgba(45, 212, 191, 0.15);
+  color: #2DD4BF;
+  border: 1px solid rgba(45, 212, 191, 0.35);
+}
+.badge-purple {
+  background: rgba(168, 85, 247, 0.15);
+  color: #C084FC;
+  border: 1px solid rgba(168, 85, 247, 0.35);
+}
+
+.section-info-headline {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+  line-height: 1.35;
+}
+.section-info-desc {
+  font-size: 16px; /* 15-17px per requirement */
+  color: #CBD5E1;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.left-summary-box {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.left-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+.left-summary-label {
+  color: #94A3B8;
+  font-weight: 500;
+}
+.left-summary-value {
+  color: #FFFFFF;
+  font-weight: 700;
+}
+.left-summary-value.sky {
+  color: #38BDF8;
+}
+
+/* Right Column */
+.cinematic-right-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ─── WEATHER TIMELINE 4 COLUMNS × 2 ROWS GRID (8 CARDS) ─────────────── */
+.timeline-grid-4x2 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(2, auto);
+  gap: 10px;
+  width: 100%;
+}
+
+.weather-timeline-card {
+  padding: 10px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 3px;
+  border-radius: 14px;
+  position: relative;
+  transition: transform 200ms ease, border-color 200ms ease;
+}
+.weather-timeline-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.28) !important;
+}
+
+.timeline-card-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #94A3B8;
+}
+
+.timeline-time {
+  font-size: 15px; /* 14-16px per requirement */
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.timeline-icon {
+  margin: 1px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeline-temp {
+  font-size: 20px; /* 18-22px per requirement */
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.timeline-cond {
+  font-size: 13px; /* 13-15px per requirement */
+  color: #CBD5E1;
+  line-height: 1.2;
+}
+
+.timeline-rain-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px; /* 12-14px per requirement */
+  font-weight: 600;
+  color: #38BDF8;
+  background: rgba(56, 189, 248, 0.16);
+  padding: 2px 7px;
+  border-radius: 999px;
+  margin-top: 2px;
+}
+
+/* ─── RAIN & OUTDOOR GRID (6 CARDS: 2 COLUMNS × 3 ROWS) ──────────────── */
+.home-cinematic-stage .dash-rain-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+.dash-rain-stat {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: 14px;
+}
+.dash-rain-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.dash-rain-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.dash-rain-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #94A3B8;
+}
+.dash-rain-value {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+.dash-rain-sub {
+  font-size: 0.72rem;
+  color: #64748B;
+}
+
+/* ─── SUNRISE & SUNSET WARM HIGHLIGHT STYLING (ZERO BLUR) ─────────────── */
+.home-cinematic-stage .sunrise-highlight-card {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.28), rgba(16, 28, 44, 0.72)) !important;
+  border: 1px solid rgba(245, 158, 11, 0.50) !important;
+  box-shadow: 0 6px 22px rgba(245, 158, 11, 0.25) !important;
+}
+.home-cinematic-stage .sunrise-highlight-card .dash-rain-label {
+  color: #FDE68A !important;
+  font-weight: 700;
+}
+.home-cinematic-stage .sunrise-highlight-card .dash-rain-value {
+  color: #FEF08A !important;
+  text-shadow: 0 0 12px rgba(251, 191, 36, 0.55);
+}
+.home-cinematic-stage .sunrise-highlight-card .dash-rain-sub {
+  color: rgba(254, 240, 138, 0.75) !important;
+}
+
+.home-cinematic-stage .sunset-highlight-card {
+  background: linear-gradient(135deg, rgba(251, 113, 133, 0.26), rgba(16, 28, 44, 0.72)) !important;
+  border: 1px solid rgba(251, 113, 133, 0.50) !important;
+  box-shadow: 0 6px 22px rgba(251, 113, 133, 0.22) !important;
+}
+.home-cinematic-stage .sunset-highlight-card .dash-rain-label {
+  color: #FECDD3 !important;
+  font-weight: 700;
+}
+.home-cinematic-stage .sunset-highlight-card .dash-rain-value {
+  color: #FDA4AF !important;
+  text-shadow: 0 0 12px rgba(251, 113, 133, 0.55);
+}
+.home-cinematic-stage .sunset-highlight-card .dash-rain-sub {
+  color: rgba(253, 164, 175, 0.75) !important;
+}
+
+/* ─── INDIA & MAJOR EVENTS STACK ──────────────────────────────────────── */
+.cinematic-events-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.dash-simple-card {
+  padding: 14px 18px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.dash-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.dash-card-title-group {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.dash-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+}
+.dash-card-place {
+  font-size: 0.8rem;
+  color: #94A3B8;
+}
+.dash-status-tag,
+.dash-simple-pill {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  color: #E2E8F0;
+}
+.dash-card-desc {
+  font-size: 0.9rem;
+  color: #CBD5E1;
+  line-height: 1.4;
+  margin: 0;
+}
+.dash-card-meta-line {
+  display: flex;
+  gap: 12px;
+  font-size: 0.74rem;
+  color: #64748B;
+}
+
+/* ─── END-OF-SCROLL RETURN TO TOP BANNER ──────────────────────────────── */
+.return-loop-banner {
+  position: fixed;
+  top: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  background: rgba(14, 24, 38, 0.90);
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(251, 191, 36, 0.25);
+  z-index: 60;
+  animation: bannerFadeSlide 400ms ease-out forwards;
+}
+.return-loop-icon {
+  font-size: 16px;
+  color: #FBBF24;
+  display: inline-block;
+  animation: spinIcon 1.5s linear infinite;
+}
+.return-loop-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #FEF08A;
+  letter-spacing: 0.02em;
+}
+@keyframes spinIcon {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes bannerFadeSlide {
+  from { opacity: 0; transform: translate(-50%, -10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* ─── FLOATING SECTION DOTS & SCROLL INDICATOR ────────────────────────── */
+.floating-section-nav {
+  position: fixed;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 50;
+  background: rgba(14, 24, 38, 0.75);
+  padding: 10px 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Vertical "Scroll to know more" hint immediately to the left of the dots */
+.scroll-indicator-label {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 2px;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  background: transparent;
+  border: none;
+  opacity: 1;
+  transition: opacity 500ms cubic-bezier(0.16, 1, 0.3, 1), transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-indicator-label.fade-out {
+  opacity: 0;
+  transform: translateY(-50%) translateY(8px);
+  pointer-events: none;
+}
+
+.scroll-indicator-label .hint-arrow {
+  font-size: 13px;
+  line-height: 1;
+  color: rgba(251, 191, 36, 0.95);
+  margin-bottom: 2px;
+  animation: hintArrowBounce 2.5s ease-in-out infinite;
+}
+
+.scroll-indicator-label .hint-word {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.25;
+  color: rgba(241, 245, 249, 0.85);
+  letter-spacing: 0.03em;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+@keyframes hintArrowBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+.nav-dot-btn {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 300ms ease;
+}
+.nav-dot-btn:hover { background: rgba(255, 255, 255, 0.75); transform: scale(1.25); }
+.nav-dot-btn.active { background: #FBBF24; box-shadow: 0 0 10px rgba(251, 191, 36, 0.7); transform: scale(1.35); }
+
+/* ─── SECTION SCROLL HINT BUTTON ──────────────────────────────────────── */
+.section-scroll-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #94A3B8;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 250ms ease;
+  text-transform: uppercase;
+  user-select: none;
+}
+.section-scroll-hint:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(125, 211, 252, 0.35);
+}
+
+/* ─── RESPONSIVE RULES ────────────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .home-cinematic-stage {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding-top: 76px;
+    padding-bottom: 95px;
+    overflow-y: visible;
+  }
+
+  .cinematic-two-columns {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .cinematic-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .s0-metric-pills {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .timeline-grid-4x2 {
+    grid-template-columns: 1fr;
+  }
+
+  .home-cinematic-stage .dash-rain-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .floating-section-nav {
+    right: 12px;
+    padding: 8px 6px;
+    gap: 10px;
+  }
+
+  .nav-dot-btn {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scroll-indicator-label {
+    margin-right: 10px;
+  }
+  .scroll-indicator-label .hint-arrow {
+    font-size: 12px;
+  }
+  .scroll-indicator-label .hint-word {
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    color: rgba(241, 245, 249, 0.80);
+  }
+
+  .section-header-title {
+    font-size: 24px;
+  }
+
+  .central-visual-box {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-section-nav {
+    right: 8px;
+    padding: 6px 4px;
+    gap: 7px;
+  }
+
+  .nav-dot-btn {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scroll-indicator-label {
+    margin-right: 8px;
+    gap: 1px;
+  }
+  .scroll-indicator-label .hint-arrow {
+    font-size: 11px;
+  }
+  .scroll-indicator-label .hint-word {
+    font-size: 10px;
+    letter-spacing: 0.01em;
+    color: rgba(241, 245, 249, 0.75);
+  }
+}
+
+@media (min-width: 961px) and (max-width: 1200px) {
+  .cinematic-two-columns {
+    grid-template-columns: 280px 1fr;
+  }
+  .timeline-grid-4x2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -1,0 +1,349 @@
+/* ══════════════════════════════════════════════════════════
+   Admin Nav Bar
+   Admin-exclusive top navigation. Never shown to normal users.
+══════════════════════════════════════════════════════════ */
+.admin-nav-bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  background: rgba(2, 8, 23, 0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
+}
+
+.admin-nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0.65rem 1.5rem;
+}
+
+.admin-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.admin-nav-brand-icon {
+  color: #38bdf8;
+}
+
+.admin-nav-brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.admin-nav-brand-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #f8fafc;
+  letter-spacing: -0.01em;
+}
+
+.admin-nav-brand-badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #38bdf8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.admin-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 1.5rem;
+  flex: 1;
+}
+
+.admin-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.42rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: #94a3b8;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: color 0.18s, background 0.18s, border-color 0.18s;
+}
+
+.admin-nav-link:hover {
+  color: #e0f2fe;
+  background: rgba(56, 189, 248, 0.08);
+  border-color: rgba(56, 189, 248, 0.25);
+}
+
+.admin-nav-link.is-active {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.35);
+}
+
+.admin-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.admin-nav-user-email {
+  font-size: 0.78rem;
+  color: #64748b;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-nav-logout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+}
+
+.admin-nav-logout-btn:hover {
+  background: rgba(248, 113, 113, 0.16);
+  border-color: rgba(248, 113, 113, 0.45);
+}
+
+/* Layout adjustment for AdminDashboardLayout (no bottom nav padding needed) */
+.admin-layout-content {
+  padding-bottom: 2rem;
+}
+
+/* ══════════════════════════════════════════════════════════
+   India Weather Alerts Section (Admin Email Composer)
+══════════════════════════════════════════════════════════ */
+.india-alerts-section {
+  margin-bottom: 1.5rem;
+  border-radius: 16px;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  background: rgba(15, 23, 42, 0.55);
+  overflow: hidden;
+}
+
+.india-alerts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.india-alerts-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.india-alerts-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #fbbf24;
+  margin: 0;
+}
+
+.india-alerts-source-badge {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  color: #fbbf24;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.india-alerts-refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.32rem 0.7rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #7dd3fc;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.india-alerts-refresh-btn:hover:not(:disabled) {
+  background: rgba(56, 189, 248, 0.18);
+}
+
+.india-alerts-refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.india-alerts-body {
+  padding: 1rem 1.1rem;
+}
+
+/* Loading / empty / unavailable states */
+.india-alerts-loading,
+.india-alerts-empty,
+.india-alerts-unavailable {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.75rem 0;
+  font-size: 0.83rem;
+}
+
+.india-alerts-loading { color: #7dd3fc; }
+.india-alerts-empty { color: #94a3b8; }
+.india-alerts-unavailable { color: #fbbf24; }
+
+.india-alerts-unavailable-reason {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-top: 0.25rem;
+}
+
+/* Individual Alert Card */
+.india-alert-card {
+  border-radius: 12px;
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  background: rgba(251, 191, 36, 0.05);
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.india-alert-card:last-child {
+  margin-bottom: 0;
+}
+
+.india-alert-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.65rem;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.india-alert-type-label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fbbf24;
+}
+
+.india-alert-severity-pill {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.severity-red {
+  background: rgba(239, 68, 68, 0.18);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.severity-orange {
+  background: rgba(249, 115, 22, 0.18);
+  color: #fb923c;
+  border: 1px solid rgba(249, 115, 22, 0.4);
+}
+
+.severity-yellow {
+  background: rgba(234, 179, 8, 0.18);
+  color: #fbbf24;
+  border: 1px solid rgba(234, 179, 8, 0.4);
+}
+
+.severity-unknown {
+  background: rgba(148, 163, 184, 0.12);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.india-alert-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.4rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.india-alert-meta-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.india-alert-meta-label {
+  font-size: 0.67rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.india-alert-meta-value {
+  font-size: 0.8rem;
+  color: #cbd5e1;
+}
+
+.india-alert-description {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.india-alert-insert-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #f8fafc;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.25), rgba(245, 158, 11, 0.2));
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+}
+
+.india-alert-insert-btn:hover {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.38), rgba(245, 158, 11, 0.32));
+  border-color: rgba(251, 191, 36, 0.6);
+}
+
+.india-alert-inserted-notice {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  color: #34d399;
+  padding: 0.3rem 0;
+}
