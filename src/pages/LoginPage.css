@@ -1,12 +1,16 @@
 .login-page {
   position: relative;
   width: 100vw;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #000000;
+  padding: 1.5rem 1rem;
+  box-sizing: border-box;
 }
 
 .login-page-video {
@@ -30,7 +34,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 0.5rem;
 }
 
 .login-card {
@@ -46,6 +50,13 @@
   box-shadow:
     0 20px 50px rgba(8, 20, 40, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 1.5rem 1.15rem 1.25rem;
+    border-radius: 18px;
+  }
 }
 
 .login-brand {

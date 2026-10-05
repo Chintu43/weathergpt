@@ -938,13 +938,41 @@
 
 /* ─── RESPONSIVE RULES ────────────────────────────────────────────────── */
 @media (max-width: 960px) {
+  .home-fixed-header {
+    padding: 0 16px;
+    height: 60px;
+  }
+
   .home-cinematic-stage {
     height: auto;
     min-height: 100vh;
     min-height: 100svh;
-    padding-top: 76px;
-    padding-bottom: 95px;
+    padding-top: 68px;
+    padding-bottom: 90px;
+    padding-left: 16px;
+    padding-right: 16px;
     overflow-y: visible;
+  }
+
+  .s0-open-layout {
+    height: auto;
+    max-height: none;
+    justify-content: flex-start;
+    gap: 14px;
+    padding: 8px 4px 16px;
+  }
+
+  .s0-greeting-heading {
+    font-size: clamp(24px, 5.5vw, 36px);
+  }
+
+  .s0-temperature {
+    font-size: clamp(2.8rem, 8vw, 3.8rem);
+  }
+
+  .cinematic-section-container {
+    max-height: none;
+    gap: 16px;
   }
 
   .cinematic-two-columns {
@@ -961,20 +989,23 @@
 
   .s0-metric-pills {
     grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
   }
 
   .timeline-grid-4x2 {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
   }
 
   .home-cinematic-stage .dash-rain-grid {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
   }
 
   .floating-section-nav {
-    right: 12px;
-    padding: 8px 6px;
-    gap: 10px;
+    right: 10px;
+    padding: 8px 5px;
+    gap: 8px;
   }
 
   .nav-dot-btn {
@@ -983,15 +1014,7 @@
   }
 
   .scroll-indicator-label {
-    margin-right: 10px;
-  }
-  .scroll-indicator-label .hint-arrow {
-    font-size: 12px;
-  }
-  .scroll-indicator-label .hint-word {
-    font-size: 11px;
-    letter-spacing: 0.02em;
-    color: rgba(241, 245, 249, 0.80);
+    display: none; /* Hide text label on mobile to prevent overlapping cards */
   }
 
   .section-header-title {
@@ -1005,28 +1028,52 @@
 }
 
 @media (max-width: 480px) {
+  .home-fixed-header {
+    padding: 0 12px;
+  }
+
+  .home-cinematic-stage {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .s0-greeting-heading {
+    font-size: clamp(20px, 5.2vw, 26px);
+  }
+
+  .s0-temperature {
+    font-size: 2.8rem;
+  }
+
+  .s0-metric-pill {
+    padding: 6px 8px;
+  }
+
+  .s0-pill-label {
+    font-size: 0.65rem;
+  }
+
+  .s0-pill-value {
+    font-size: 0.88rem;
+  }
+
+  .timeline-grid-4x2 {
+    grid-template-columns: 1fr;
+  }
+
+  .home-cinematic-stage .dash-rain-grid {
+    grid-template-columns: 1fr !important;
+  }
+
   .floating-section-nav {
-    right: 8px;
-    padding: 6px 4px;
-    gap: 7px;
+    right: 6px;
+    padding: 5px 3px;
+    gap: 6px;
   }
 
   .nav-dot-btn {
     width: 6px;
     height: 6px;
-  }
-
-  .scroll-indicator-label {
-    margin-right: 8px;
-    gap: 1px;
-  }
-  .scroll-indicator-label .hint-arrow {
-    font-size: 11px;
-  }
-  .scroll-indicator-label .hint-word {
-    font-size: 10px;
-    letter-spacing: 0.01em;
-    color: rgba(241, 245, 249, 0.75);
   }
 }
 

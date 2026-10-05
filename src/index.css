@@ -1183,6 +1183,18 @@ h1, h2, h3, h4, h5, h6 {
   background: #0369a1;
 }
 
+@media (max-width: 480px) {
+  .farmers-question-form {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .farmers-submit-btn {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
 .farmers-advisory-result {
   margin-top: 6px;
   padding: 1rem 1.15rem;
@@ -1480,7 +1492,32 @@ h1, h2, h3, h4, h5, h6 {
     border-left: none;
     border-right: none;
     border-bottom: none;
-    padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 8px));
+    padding: 6px 2px calc(6px + env(safe-area-inset-bottom, 8px));
+    gap: 2px;
+  }
+
+  .bottom-nav-item {
+    padding: 5px 2px;
+  }
+
+  .bottom-nav-label {
+    font-size: 0.65rem;
+    letter-spacing: 0;
+  }
+}
+
+@media (max-width: 380px) {
+  .bottom-nav-item {
+    padding: 4px 1px;
+  }
+
+  .bottom-nav-icon-wrapper svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .bottom-nav-label {
+    font-size: 0.6rem;
   }
 }
 
@@ -2002,6 +2039,32 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 0 6px #34d399;
 }
 
+@media (max-width: 640px) {
+  .detailed-alert-card {
+    padding: 1rem;
+    gap: 8px;
+  }
+
+  .alert-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .alert-timing-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    font-size: 0.72rem;
+  }
+
+  .alert-card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
+
 /* AI PAGE STYLING */
 .suggested-prompts-bar {
   display: flex;
@@ -2284,6 +2347,16 @@ h1, h2, h3, h4, h5, h6 {
   gap: 1.25rem;
 }
 
+@media (max-width: 640px) {
+  .profile-settings-card {
+    padding: 1.15rem 1rem;
+  }
+
+  .pill-toggle-group {
+    flex-wrap: wrap;
+  }
+}
+
 .settings-header {
   display: flex;
   align-items: center;
@@ -2518,10 +2591,33 @@ h1, h2, h3, h4, h5, h6 {
   width: min(280px, calc(100% - 24px));
   padding: 12px 14px;
   border-radius: 14px;
-  background: rgba(8, 12, 20, 0.42);
+  background: rgba(8, 12, 20, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(10px);
   color: #f8fafc;
+}
+
+@media (max-width: 768px) {
+  .map-live-stage {
+    height: auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .leaflet-map-host {
+    height: 380px;
+    min-height: 320px;
+  }
+
+  .map-compact-panel {
+    position: relative;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
 }
 
 .map-compact-temp {
@@ -2940,6 +3036,24 @@ h1, h2, h3, h4, h5, h6 {
 .travel-submit-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .travel-form-card {
+    padding: 1rem;
+    border-radius: 16px;
+  }
+
+  .travel-action-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .travel-submit-btn {
+    justify-content: center;
+    width: 100%;
+  }
 }
 
 .travel-quick-destinations {
