@@ -3533,9 +3533,15 @@ h1, h2, h3, h4, h5, h6 {
    ========================================================================== */
 
 @media (max-width: 768px) {
-  /* Landing Page Stage Sizing */
+  /* Landing Page Stage Sizing & Dynamic Vertical Centering */
   .landing-stage {
-    padding: 3.25rem 0.75rem 2rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: 100vh !important;
+    min-height: 100svh !important;
+    padding: calc(3.25rem + env(safe-area-inset-top, 0px)) 0.75rem calc(2.25rem + env(safe-area-inset-bottom, 0px)) !important;
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
@@ -3543,9 +3549,15 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   .landing-content {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
     width: 100% !important;
     max-width: 100% !important;
     padding: 0 !important;
+    margin: auto 0 !important;
     box-sizing: border-box !important;
   }
 
