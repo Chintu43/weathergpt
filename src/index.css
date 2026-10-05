@@ -1697,11 +1697,13 @@ h1, h2, h3, h4, h5, h6 {
 
 .map-svg-frame {
   position: relative;
-  width: 320px;
+  width: min(320px, 100%);
+  max-width: 100%;
   height: 360px;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
 }
 
 .map-india-svg {
