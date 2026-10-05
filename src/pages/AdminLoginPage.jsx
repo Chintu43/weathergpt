@@ -3,8 +3,9 @@ import { motion } from 'framer-motion';
 import { Eye, EyeOff, ShieldCheck, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import { LOGIN_CLOUD_VIDEO_URL } from '../components/background/videoUrls';
+import { LOGIN_CLOUD_VIDEO_URL, LOGIN_CLOUD_VIDEO_MOBILE_URL } from '../components/background/videoUrls';
 import { usePauseCloudAtThree } from '../hooks/usePauseCloudAtThree';
+import { useResponsiveVideoSource } from '../utils/responsiveVideo';
 import '../pages/LoginPage.css';
 
 const ease = [0.16, 1, 0.3, 1];
@@ -20,6 +21,8 @@ export function AdminLoginPage() {
   const videoRef = useRef(null);
   const [showForm, setShowForm] = useState(false);
   const { adminLogin } = useAuth();
+
+  const videoSrc = useResponsiveVideoSource(LOGIN_CLOUD_VIDEO_URL, LOGIN_CLOUD_VIDEO_MOBILE_URL);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -59,7 +62,7 @@ export function AdminLoginPage() {
       <video
         ref={videoRef}
         className="login-page-video"
-        src={LOGIN_CLOUD_VIDEO_URL}
+        src={videoSrc}
         autoPlay
         muted
         playsInline

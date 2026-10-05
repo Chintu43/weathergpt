@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { BackgroundVideo } from '../components/background/BackgroundVideo';
-import { LANDING_VIDEO_URL, LOGIN_CLOUD_VIDEO_URL } from '../components/background/videoUrls';
+import { LANDING_VIDEO_URL, LANDING_VIDEO_MOBILE_URL, LOGIN_CLOUD_VIDEO_URL, LOGIN_CLOUD_VIDEO_MOBILE_URL } from '../components/background/videoUrls';
 import { WeatherGPTIntro } from '../components/landing/WeatherGPTIntro';
 import { LoginButton } from '../components/landing/LoginButton';
 import { AnimatedLoginForm } from '../components/auth/AnimatedLoginForm';
@@ -40,6 +40,7 @@ export function LandingPage() {
     <main className="landing-stage">
       <BackgroundVideo
         src={LANDING_VIDEO_URL}
+        mobileSrc={LANDING_VIDEO_MOBILE_URL}
         className="app-background-video landing-video"
         loop
         opacity={cloudActive ? 0 : 1}
@@ -47,6 +48,7 @@ export function LandingPage() {
 
       <BackgroundVideo
         src={LOGIN_CLOUD_VIDEO_URL}
+        mobileSrc={LOGIN_CLOUD_VIDEO_MOBILE_URL}
         className="app-background-video cloud-video"
         loop={false}
         preload="auto"

@@ -1,10 +1,12 @@
 import React, { useRef, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import { DASHBOARD_VIDEO_URL } from '../background/videoUrls';
+import { DASHBOARD_VIDEO_URL, DASHBOARD_VIDEO_MOBILE_URL } from '../background/videoUrls';
 import { BottomNav } from '../navigation/BottomNav';
+import { useResponsiveVideoSource } from '../../utils/responsiveVideo';
 
 export function DashboardLayout() {
   const videoRef = useRef(null);
+  const videoSrc = useResponsiveVideoSource(DASHBOARD_VIDEO_URL, DASHBOARD_VIDEO_MOBILE_URL);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -19,7 +21,7 @@ export function DashboardLayout() {
     if (playPromise && typeof playPromise.catch === 'function') {
       playPromise.catch(() => {});
     }
-  }, []);
+  }, [videoSrc]);
 
   return (
     <div className="dashboard-root">
@@ -27,7 +29,7 @@ export function DashboardLayout() {
       <video
         ref={videoRef}
         className="dashboard-bg-video"
-        src={DASHBOARD_VIDEO_URL}
+        src={videoSrc}
         autoPlay
         muted
         loop

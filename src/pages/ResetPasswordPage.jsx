@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, CheckCircle2, AlertCircle, Lock, ArrowLeft } from 'lucide-react';
-import { LOGIN_CLOUD_VIDEO_URL } from '../components/background/videoUrls';
+import { LOGIN_CLOUD_VIDEO_URL, LOGIN_CLOUD_VIDEO_MOBILE_URL } from '../components/background/videoUrls';
+import { useResponsiveVideoSource } from '../utils/responsiveVideo';
 import './LoginPage.css';
 
 const ease = [0.16, 1, 0.3, 1];
@@ -12,6 +13,8 @@ export function ResetPasswordPage() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token') || '';
   const email = searchParams.get('email') || '';
+
+  const videoSrc = useResponsiveVideoSource(LOGIN_CLOUD_VIDEO_URL, LOGIN_CLOUD_VIDEO_MOBILE_URL);
 
   const [validating, setValidating] = useState(true);
   const [isValidToken, setIsValidToken] = useState(false);
@@ -118,7 +121,7 @@ export function ResetPasswordPage() {
     <main className="login-page">
       <video
         className="login-page-video"
-        src={LOGIN_CLOUD_VIDEO_URL}
+        src={videoSrc}
         autoPlay
         muted
         playsInline

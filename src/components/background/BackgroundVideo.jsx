@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from 'react';
+import { useResponsiveVideoSource } from '../../utils/responsiveVideo';
 
 export function BackgroundVideo({
   src,
+  mobileSrc,
   className = 'app-background-video',
   loop = true,
   preload = 'auto',
@@ -11,6 +13,7 @@ export function BackgroundVideo({
 }) {
   const internalRef = useRef(null);
   const resolvedRef = videoRef || internalRef;
+  const activeSrc = useResponsiveVideoSource(src, mobileSrc);
 
   useEffect(() => {
     const video = resolvedRef.current;
@@ -44,13 +47,13 @@ export function BackgroundVideo({
       video.removeEventListener('loadeddata', tryPlay);
       video.removeEventListener('playing', handlePlaying);
     };
-  }, [src, loop, onPlaying, resolvedRef]);
+  }, [activeSrc, loop, onPlaying, resolvedRef]);
 
   return (
     <video
       ref={resolvedRef}
       className={className}
-      src={src}
+      src={activeSrc}
       autoPlay={loop}
       muted
       loop={loop}
