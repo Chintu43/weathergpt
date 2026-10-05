@@ -4,11 +4,13 @@ import { authService } from './authService';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [session, setSession] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [session, setSession] = useState(() => authService.getCurrentSession());
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setSession(authService.getCurrentSession());
+    // Re-verify session validity on mount
+    const currentSession = authService.getCurrentSession();
+    setSession(currentSession);
     setIsLoading(false);
   }, []);
 
