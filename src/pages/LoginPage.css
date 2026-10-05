@@ -54,10 +54,29 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
+  .login-page {
+    padding: 1rem 0.75rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
   .login-card {
-    padding: 1.5rem 1.15rem 1.25rem;
+    width: min(380px, 100%);
+    max-width: 100%;
+    padding: 1.35rem 1.1rem 1.25rem;
     border-radius: 18px;
+    box-sizing: border-box;
+  }
+
+  .login-brand {
+    font-size: 1.35rem;
+  }
+
+  .login-heading {
+    font-size: 0.95rem;
+    margin-bottom: 1.1rem;
   }
 }
 
