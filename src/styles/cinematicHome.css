@@ -952,6 +952,10 @@
     padding-left: 16px;
     padding-right: 16px;
     overflow-y: visible;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .s0-open-layout {
@@ -960,10 +964,17 @@
     justify-content: flex-start;
     gap: 14px;
     padding: 8px 4px 16px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .s0-greeting-heading {
-    font-size: clamp(24px, 5.5vw, 36px);
+    font-size: clamp(22px, 5.5vw, 36px);
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
   }
 
   .s0-temperature {
@@ -973,18 +984,42 @@
   .cinematic-section-container {
     max-height: none;
     gap: 16px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .cinematic-two-columns {
     display: flex;
     flex-direction: column;
     gap: 18px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .cinematic-left-col {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .cinematic-right-col {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .cinematic-section-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .s0-metric-pills {
@@ -992,9 +1027,35 @@
     gap: 6px;
   }
 
+  /* ── HORIZONTAL SIDE-BY-SIDE FORECAST SCROLLING ROW FOR MOBILE ── */
   .timeline-grid-4x2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    gap: 12px !important;
+    padding-bottom: 8px !important;
+    padding-top: 4px !important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .timeline-grid-4x2::-webkit-scrollbar {
+    display: none;
+  }
+
+  .timeline-grid-4x2 .weather-timeline-card {
+    flex: 0 0 160px !important;
+    width: 160px !important;
+    min-width: 160px !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
   }
 
   .home-cinematic-stage .dash-rain-grid {
@@ -1038,7 +1099,7 @@
   }
 
   .s0-greeting-heading {
-    font-size: clamp(20px, 5.2vw, 26px);
+    font-size: clamp(18px, 5.2vw, 24px);
   }
 
   .s0-temperature {
@@ -1057,8 +1118,10 @@
     font-size: 0.88rem;
   }
 
-  .timeline-grid-4x2 {
-    grid-template-columns: 1fr;
+  .timeline-grid-4x2 .weather-timeline-card {
+    flex: 0 0 148px !important;
+    width: 148px !important;
+    min-width: 148px !important;
   }
 
   .home-cinematic-stage .dash-rain-grid {
