@@ -53,8 +53,10 @@ h1, h2, h3, h4, h5, h6 {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
+  min-width: 100vw;
+  min-height: 100vh;
   object-fit: cover;
   object-position: center center;
   border: 0;
@@ -65,8 +67,9 @@ h1, h2, h3, h4, h5, h6 {
 
 .landing-stage {
   position: relative;
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
+  min-height: 100svh;
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
@@ -75,6 +78,7 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   justify-content: flex-start;
   padding: 4.5rem 1rem 3.5rem;
+  box-sizing: border-box;
 }
 
 .landing-content {
@@ -416,8 +420,10 @@ h1, h2, h3, h4, h5, h6 {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
+  min-width: 100vw;
+  min-height: 100vh;
   object-fit: cover;
   object-position: center center;
   z-index: 0;
@@ -427,10 +433,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Very Light Translucent Readability Overlay: Video remains clearly visible */
 .dashboard-readability-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   background: linear-gradient(
     160deg,
     rgba(5, 10, 20, 0.30) 0%,
