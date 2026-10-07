@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../auth/AuthContext';
+import { useTranslation } from '../../i18n/LanguageContext';
 
 const ease = [0.16, 1, 0.3, 1];
 
@@ -12,6 +13,7 @@ const fadeUp = (delay) => ({
 });
 
 export function AnimatedLoginForm({ onSuccess }) {
+  const { t } = useTranslation();
   const { login, register } = useAuth();
   const [mode, setMode] = useState('login'); // 'login' | 'register' | 'forgot'
   const [name, setName] = useState('');
@@ -112,54 +114,54 @@ export function AnimatedLoginForm({ onSuccess }) {
         WeatherGPT
       </motion.h2>
       <motion.p className="login-heading" {...fadeUp(0.35)}>
-        {mode === 'login' ? 'Welcome back' : mode === 'register' ? 'Create your account' : 'Reset Password'}
+        {mode === 'login' ? t('login.title') : mode === 'register' ? t('login.createAccountTitle') : t('login.forgotPassword')}
       </motion.p>
 
       <form className="login-form" onSubmit={handleSubmit}>
         <AnimatePresence initial={false}>
           {mode === 'register' && (
             <motion.div className="login-field" {...fadeUp(0.45)} exit={{ opacity: 0, height: 0 }}>
-              <label htmlFor="login-name">Name</label>
+              <label htmlFor="login-name">{t('login.nameLabel')}</label>
               <input
                 id="login-name"
                 type="text"
                 autoComplete="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Your name"
+                placeholder={t('login.namePlaceholder')}
               />
             </motion.div>
           )}
         </AnimatePresence>
 
         <motion.div className="login-field" {...fadeUp(mode === 'register' ? 0.55 : 0.5)}>
-          <label htmlFor="login-email">Email</label>
+          <label htmlFor="login-email">{t('login.emailLabel')}</label>
           <input
             id="login-email"
             type="email"
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
+            placeholder={t('login.emailPlaceholder')}
           />
         </motion.div>
 
         {mode !== 'forgot' && (
           <>
             <motion.div className="login-field" {...fadeUp(mode === 'register' ? 0.65 : 0.6)}>
-              <label htmlFor="login-phone">Phone Number</label>
+              <label htmlFor="login-phone">{t('login.phoneLabel')}</label>
               <input
                 id="login-phone"
                 type="tel"
                 autoComplete="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="+91 98765 43210"
+                placeholder={t('login.phonePlaceholder')}
               />
             </motion.div>
 
             <motion.div className="login-field" {...fadeUp(mode === 'register' ? 0.75 : 0.7)}>
-              <label htmlFor="login-password">Password</label>
+              <label htmlFor="login-password">{t('login.passwordLabel')}</label>
               <div className="login-password-wrap">
                 <input
                   id="login-password"
@@ -189,32 +191,32 @@ export function AnimatedLoginForm({ onSuccess }) {
           {...fadeUp(0.9)}
         >
           {isSubmitting
-            ? 'PLEASE WAIT'
+            ? t('common.loading')
             : mode === 'login'
-            ? 'SIGN IN'
+            ? t('login.loginBtn')
             : mode === 'register'
-            ? 'CREATE ACCOUNT'
-            : 'SEND RESET LINK'}
+            ? t('login.registerLink')
+            : t('login.forgotPassword')}
         </motion.button>
       </form>
 
       <motion.div className="login-links" {...fadeUp(1.05)}>
         {mode === 'forgot' ? (
           <button type="button" className="login-link" onClick={() => switchMode('login')}>
-            Back to Sign in
+            {t('common.back')}
           </button>
         ) : mode === 'login' ? (
           <>
             <button type="button" className="login-link" onClick={() => switchMode('register')}>
-              Create account
+              {t('login.registerLink')}
             </button>
             <button type="button" className="login-link" onClick={() => switchMode('forgot')}>
-              Forgot password
+              {t('login.forgotPassword')}
             </button>
           </>
         ) : (
           <button type="button" className="login-link" onClick={() => switchMode('login')}>
-            Already have an account
+            {t('common.login')}
           </button>
         )}
       </motion.div>
@@ -226,7 +228,7 @@ export function AnimatedLoginForm({ onSuccess }) {
           style={{ color: '#38bdf8', fontWeight: '600' }}
           onClick={() => (window.location.href = '/admin/login')}
         >
-          Admin Login
+          {t('login.adminLoginBtn')}
         </button>
       </div>
 

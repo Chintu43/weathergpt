@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { weatherService } from '../services/weatherService';
 import { BackButton } from '../components/common/BackButton';
+import { useTranslation } from '../i18n/LanguageContext';
 import {
   ShieldAlert,
   Sparkles,
@@ -14,6 +15,7 @@ import {
 } from 'lucide-react';
 
 export function AlertsPage() {
+  const { t } = useTranslation();
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterMode, setFilterMode] = useState('all'); // 'all', 'official', 'ai'
@@ -44,9 +46,9 @@ export function AlertsPage() {
       {/* Header */}
       <header className="page-header">
         <div>
-          <h2 className="page-title">Active Weather Alerts & Advisories</h2>
+          <h2 className="page-title">{t('alerts.title')}</h2>
           <p className="page-subtitle">
-            Monitored natural hazards, official disaster warnings & AI meteorological risk advisories
+            {t('alerts.subtitle')}
           </p>
         </div>
 

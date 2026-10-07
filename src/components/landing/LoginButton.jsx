@@ -1,7 +1,9 @@
 import React from 'react';
+import { useTranslation } from '../../i18n/LanguageContext';
 import './LoginButton.css';
 
 export function LoginButton({ onClick, disabled = false }) {
+  const { t } = useTranslation();
   return (
     <button
       type="button"
@@ -10,7 +12,7 @@ export function LoginButton({ onClick, disabled = false }) {
       disabled={disabled}
       aria-label="Log in to WeatherGPT"
     >
-      LOGIN
+      {t('landing.loginBtn', 'LOGIN')}
     </button>
   );
 }

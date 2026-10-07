@@ -8,6 +8,9 @@ import { LoginButton } from '../components/landing/LoginButton';
 import { AnimatedLoginForm } from '../components/auth/AnimatedLoginForm';
 import { usePauseCloudAtThree } from '../hooks/usePauseCloudAtThree';
 
+import { LanguageSelector } from '../components/common/LanguageSelector';
+import { useTranslation } from '../i18n/LanguageContext';
+
 const PHASE = {
   LANDING: 'LANDING',
   CLOUD_PLAYING: 'CLOUD_PLAYING',
@@ -15,6 +18,7 @@ const PHASE = {
 };
 
 export function LandingPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const cloudVideoRef = useRef(null);
   const [phase, setPhase] = useState(PHASE.LANDING);
@@ -58,7 +62,10 @@ export function LandingPage() {
 
       <header className={`landing-topbar ${phase === PHASE.LANDING ? 'is-visible' : 'is-hidden'}`}>
         <span className="landing-topbar-brand">WeatherGPT</span>
-        <LoginButton onClick={handleLoginClick} disabled={phase !== PHASE.LANDING} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <LanguageSelector />
+          <LoginButton onClick={handleLoginClick} disabled={phase !== PHASE.LANDING} />
+        </div>
       </header>
 
       <AnimatePresence>
@@ -77,7 +84,7 @@ export function LandingPage() {
 
       {phase === PHASE.LANDING && (
         <footer className="landing-footer">
-          WeatherGPT © 2026 — AI Meteorological Warning & Risk Assessment Platform
+          {t('landing.footer')}
         </footer>
       )}
 

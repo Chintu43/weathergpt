@@ -1,66 +1,68 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Home, Map, AlertTriangle, Compass, Sprout, User } from 'lucide-react';
-
-const NAV_ITEMS = [
-  {
-    id: 'home',
-    label: 'Home',
-    hoverLabel: 'GO TO HOME',
-    path: '/home',
-    icon: Home,
-    ariaLabel: 'Navigate to WeatherGPT Home'
-  },
-  {
-    id: 'map',
-    label: 'Map',
-    hoverLabel: 'GO TO MAP',
-    path: '/map',
-    icon: Map,
-    ariaLabel: 'Navigate to Weather Map'
-  },
-  {
-    id: 'alerts',
-    label: 'Alerts',
-    hoverLabel: 'GO TO ALERTS',
-    path: '/alerts',
-    icon: AlertTriangle,
-    ariaLabel: 'Navigate to Weather Alerts'
-  },
-  {
-    id: 'travel',
-    label: 'Travel Planner',
-    hoverLabel: 'GO TO TRAVEL',
-    path: '/travel',
-    icon: Compass,
-    ariaLabel: 'Navigate to Travel Planner'
-  },
-  {
-    id: 'farmergpt',
-    label: 'FarmerGPT',
-    hoverLabel: 'GO TO FARMERGPT',
-    path: '/farmergpt',
-    icon: Sprout,
-    ariaLabel: 'Navigate to FarmerGPT'
-  },
-  {
-    id: 'profile',
-    label: 'Profile',
-    hoverLabel: 'GO TO PROFILE',
-    path: '/profile',
-    icon: User,
-    ariaLabel: 'Navigate to User Profile and Settings'
-  }
-];
+import { useTranslation } from '../../i18n/LanguageContext';
 
 export function BottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const navItems = [
+    {
+      id: 'home',
+      label: t('nav.home', 'Home'),
+      hoverLabel: 'HOME',
+      path: '/home',
+      icon: Home,
+      ariaLabel: 'Navigate to WeatherGPT Home'
+    },
+    {
+      id: 'map',
+      label: t('nav.map', 'Map'),
+      hoverLabel: 'MAP',
+      path: '/map',
+      icon: Map,
+      ariaLabel: 'Navigate to Weather Map'
+    },
+    {
+      id: 'alerts',
+      label: t('nav.alerts', 'Alerts'),
+      hoverLabel: 'ALERTS',
+      path: '/alerts',
+      icon: AlertTriangle,
+      ariaLabel: 'Navigate to Weather Alerts'
+    },
+    {
+      id: 'travel',
+      label: t('nav.travel', 'Travel Planner'),
+      hoverLabel: 'TRAVEL',
+      path: '/travel',
+      icon: Compass,
+      ariaLabel: 'Navigate to Travel Planner'
+    },
+    {
+      id: 'farmergpt',
+      label: t('nav.farmer', 'FarmerGPT'),
+      hoverLabel: 'FARMER',
+      path: '/farmergpt',
+      icon: Sprout,
+      ariaLabel: 'Navigate to FarmerGPT'
+    },
+    {
+      id: 'profile',
+      label: t('nav.profile', 'Profile'),
+      hoverLabel: 'PROFILE',
+      path: '/profile',
+      icon: User,
+      ariaLabel: 'Navigate to User Profile and Settings'
+    }
+  ];
 
   return (
     <nav className="bottom-nav-container" role="navigation" aria-label="Main Navigation">
       <div className="bottom-nav-bar">
-        {NAV_ITEMS.map((item) => {
+        {navItems.map((item) => {
           const Icon = item.icon;
           const isActive =
             location.pathname === item.path ||

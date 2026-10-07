@@ -1107,22 +1107,85 @@
   }
 }
 
+@media (max-width: 640px) {
+  .home-fixed-header {
+    height: auto;
+    min-height: 60px;
+    padding: 8px 12px;
+  }
+
+  .fixed-header-inner {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .dash-brand-sub {
+    font-size: 0.68rem;
+  }
+
+  .fixed-header-actions {
+    gap: 4px;
+  }
+
+  .dash-sync-btn span {
+    display: none;
+  }
+
+  .s0-search-area .dash-search-bar {
+    flex-wrap: wrap;
+    border-radius: 18px;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .dash-search-input {
+    width: 100%;
+    min-width: 0;
+    flex: 1 1 100%;
+    order: 1;
+    font-size: 0.875rem;
+  }
+
+  .dash-search-submit {
+    order: 2;
+    flex: 1 1 auto;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  .dash-current-loc-btn {
+    order: 3;
+    flex: 1 1 auto;
+    justify-content: center;
+    padding: 6px 10px;
+    font-size: 0.78rem;
+  }
+}
+
 @media (max-width: 480px) {
   .home-fixed-header {
-    padding: 0 12px;
+    padding: 6px 10px;
+  }
+
+  .dash-brand-title {
+    font-size: 1rem;
+  }
+
+  .dash-brand-sub {
+    display: none;
   }
 
   .home-cinematic-stage {
-    padding-left: 12px;
-    padding-right: 12px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
   .s0-greeting-heading {
-    font-size: clamp(18px, 5.2vw, 24px);
+    font-size: clamp(16px, 5vw, 22px);
   }
 
   .s0-temperature {
-    font-size: 2.8rem;
+    font-size: 2.5rem;
   }
 
   .s0-metric-pill {
@@ -1134,7 +1197,7 @@
   }
 
   .s0-pill-value {
-    font-size: 0.88rem;
+    font-size: 0.85rem;
   }
 
   .timeline-grid-4x2 .weather-timeline-card {

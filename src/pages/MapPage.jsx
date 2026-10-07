@@ -4,6 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import { useLocationContext } from '../context/LocationContext';
 import { weatherService } from '../services/weatherService';
 import { BackButton } from '../components/common/BackButton';
+import { useTranslation } from '../i18n/LanguageContext';
 import {
   MapPin,
   Search,
@@ -25,6 +26,7 @@ function thermalColor(temp) {
 }
 
 export function MapPage() {
+  const { t } = useTranslation();
   const { selectedLocation, setSelectedLocation } = useLocationContext();
   const mapRef = useRef(null);
   const mapElRef = useRef(null);
@@ -268,8 +270,8 @@ export function MapPage() {
       <BackButton />
       <header className="dash-section-header">
         <div>
-          <h2 className="dash-page-heading">Map</h2>
-          <p className="dash-section-sub">Live weather layers for any Indian location</p>
+          <h2 className="dash-page-heading">{t('map.title')}</h2>
+          <p className="dash-section-sub">{t('map.subtitle')}</p>
         </div>
 
         <div className="map-layer-tabs">

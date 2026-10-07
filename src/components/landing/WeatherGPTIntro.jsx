@@ -1,46 +1,44 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
-
-const FEATURES = [
-  {
-    icon: '🌧️',
-    title: 'Weather Forecasts',
-    description: 'Real-time weather conditions and forecasts for locations across India.'
-  },
-  {
-    icon: '🌪️',
-    title: 'Cyclone Monitoring',
-    description: 'Track cyclone-related weather information and risk conditions.'
-  },
-  {
-    icon: '🌊',
-    title: 'Flood Awareness',
-    description: 'Understand rainfall and flood-related weather conditions.'
-  },
-  {
-    icon: '🌡️',
-    title: 'Extreme Weather',
-    description: 'Stay informed about extreme heat, heavy rain, strong winds and other severe weather conditions.'
-  },
-  {
-    icon: '🇮🇳',
-    title: 'India Weather Intelligence',
-    description: 'Get weather information and insights across India.'
-  },
-  {
-    icon: '🌾',
-    title: 'FarmerGPT',
-    description: 'Get weather-based farming guidance using location and weather conditions.'
-  },
-  {
-    icon: '✈️',
-    title: 'Travel Planner',
-    description: 'Plan trips using destination weather and forecast conditions.'
-  }
-];
+import { useTranslation } from '../../i18n/LanguageContext';
 
 export function WeatherGPTIntro() {
+  const { t } = useTranslation();
+
+  const features = [
+    {
+      icon: '🌧️',
+      title: t('landing.forecastTitle', 'Weather Forecasts'),
+      description: t('landing.forecastDesc', 'Real-time weather conditions and forecasts for locations across India.')
+    },
+    {
+      icon: '🌪️',
+      title: t('landing.cycloneTitle', 'Cyclone Monitoring'),
+      description: t('landing.cycloneDesc', 'Track cyclone-related weather information and risk conditions.')
+    },
+    {
+      icon: '🌊',
+      title: t('nav.map', 'Weather Map'),
+      description: t('map.subtitle', 'Real-time meteorological layers and atmospheric telemetry.')
+    },
+    {
+      icon: '🌡️',
+      title: t('landing.alertsTitle', 'Weather Alerts & Updates'),
+      description: t('landing.alertsDesc', 'Instant advisories and danger warnings for heavy rainfall and storms.')
+    },
+    {
+      icon: '🌾',
+      title: t('nav.farmer', 'FarmerGPT'),
+      description: t('farmer.subtitle', 'AI-powered precision agricultural intelligence for Indian farmers.')
+    },
+    {
+      icon: '✈️',
+      title: t('nav.travel', 'Travel Planner'),
+      description: t('travel.subtitle', '16-day atmospheric travel telemetry and destination risk analysis.')
+    }
+  ];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
@@ -55,7 +53,7 @@ export function WeatherGPTIntro() {
         className="landing-badge"
       >
         <Sparkles size={14} color="#38bdf8" />
-        <span>Next-Gen Climate Intelligence</span>
+        <span>{t('landing.badge', 'AI-Powered Weather Intelligence')}</span>
       </motion.div>
 
       <motion.h1
@@ -73,7 +71,7 @@ export function WeatherGPTIntro() {
         transition={{ delay: 0.25, duration: 0.6 }}
         className="landing-subtitle"
       >
-        AI-Powered Weather Intelligence
+        {t('landing.heading', 'Understand Weather. Detect Risk. Act in Time.')}
       </motion.h2>
 
       <motion.p
@@ -82,16 +80,7 @@ export function WeatherGPTIntro() {
         transition={{ delay: 0.35, duration: 0.6 }}
         className="landing-tagline"
       >
-        <strong>Understand Weather. Detect Risk. Act in Time.</strong>
-      </motion.p>
-
-      <motion.p
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.45, duration: 0.6 }}
-        className="landing-description"
-      >
-        WeatherGPT brings real-time weather conditions, forecasts, extreme-weather information and weather-based intelligence together in one platform.
+        <strong>{t('landing.subheading', 'Real-time atmospheric telemetry, cyclone tracking, and AI-driven agricultural & travel warnings across India.')}</strong>
       </motion.p>
 
       <motion.div
@@ -100,7 +89,7 @@ export function WeatherGPTIntro() {
         transition={{ delay: 0.55, duration: 0.6 }}
         className="landing-features-grid"
       >
-        {FEATURES.map((item) => (
+        {features.map((item) => (
           <div key={item.title} className="landing-feature-card">
             <div className="landing-feature-header">
               <span className="landing-feature-icon">{item.icon}</span>
@@ -119,10 +108,10 @@ export function WeatherGPTIntro() {
       >
         <div className="landing-alerts-title">
           <span className="landing-feature-icon">📧</span>
-          <span>Weather Alerts & Updates</span>
+          <span>{t('landing.alertsTitle', 'Weather Alerts & Updates')}</span>
         </div>
         <p className="landing-alerts-desc">
-          Receive important weather alerts, updates and weather-condition information through email.
+          {t('landing.alertsDesc', 'Receive important weather alerts, updates and weather-condition information.')}
         </p>
       </motion.div>
     </motion.div>

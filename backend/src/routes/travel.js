@@ -18,7 +18,13 @@ const router = express.Router();
  */
 router.post('/plan', validateTravelRequest, async (req, res, next) => {
   try {
-    const { destination, date } = req.body;
+    const { destination, date, language } = req.body;
+    const langCode = ['te', 'hi'].includes(language) ? language : 'en';
+    const langInstruction = langCode === 'te'
+      ? '\n\nCRITICAL REQUIREMENT: All JSON key names MUST remain strictly in English as defined in the schema above. All user-facing string VALUES inside the JSON object MUST be written entirely in fluent Telugu (తెలుగు).'
+      : langCode === 'hi'
+        ? '\n\nCRITICAL REQUIREMENT: All JSON key names MUST remain strictly in English as defined in the schema above. All user-facing string VALUES inside the JSON object MUST be written entirely in fluent Hindi (हिंदी).'
+        : '';
     let lat = req.body.latitude ? parseFloat(req.body.latitude) : null;
     let lon = req.body.longitude ? parseFloat(req.body.longitude) : null;
     let resolvedName = destination.trim();
@@ -131,7 +137,7 @@ Matching this structure:
   ],
   "officialWarningNote": "Official disaster-warning verification is not available through the connected sources. Check local advisories before travel.",
   "friendlyMessage": "Wishing you a pleasant and safe journey! 🌤️"
-}`;
+}${langInstruction}`;
 
     const userPromptPayload = {
       destination: {

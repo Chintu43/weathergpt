@@ -15,7 +15,13 @@ const router = express.Router();
  */
 router.post('/advice', validateFarmerRequest, async (req, res, next) => {
   try {
-    const { state, district, question } = req.body;
+    const { state, district, question, language } = req.body;
+    const langCode = ['te', 'hi'].includes(language) ? language : 'en';
+    const langInstruction = langCode === 'te'
+      ? '\n\nCRITICAL REQUIREMENT: All JSON key names MUST remain strictly in English as defined in the schema above. All user-facing string VALUES inside the JSON object MUST be written entirely in fluent Telugu (తెలుగు).'
+      : langCode === 'hi'
+        ? '\n\nCRITICAL REQUIREMENT: All JSON key names MUST remain strictly in English as defined in the schema above. All user-facing string VALUES inside the JSON object MUST be written entirely in fluent Hindi (हिंदी).'
+        : '';
     let lat = req.body.latitude ? parseFloat(req.body.latitude) : null;
     let lon = req.body.longitude ? parseFloat(req.body.longitude) : null;
 
@@ -183,7 +189,7 @@ MUST RESPOND strictly in JSON format matching this schema:
   "missingInformation": ["Soil type details", "Irrigation availability details", "Exact field moisture status"],
   "confidence": "medium",
   "officialAdvisoryAvailable": false${intent === 'crop_selection' ? ',\n  "cropCandidates": [\n    { "name": "Crop Name", "suitability": "Highly suitable", "reason": "Reason details" }\n  ]' : ''}
-}`;
+}${langInstruction}`;
 
     const userPrompt = JSON.stringify(structuredContext, null, 2);
 
@@ -201,18 +207,28 @@ MUST RESPOND strictly in JSON format matching this schema:
     }
 
     // 8. Parse JSON response from OpenRouter
-    let parsedAdvice;
+    let parsedAdvice = null;
+    let cleanedText = rawAiOutput.replace(/```json/gi, '').replace(/```/g, '').trim();
+    const firstBrace = cleanedText.indexOf('{');
+    const lastBrace = cleanedText.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      cleanedText = cleanedText.substring(firstBrace, lastBrace + 1);
+    }
+
     try {
-      // Remove markdown JSON code blocks if present
-      const cleanedText = rawAiOutput.replace(/```json\s*/gi, '').replace(/```\s*/gi, '').trim();
       parsedAdvice = JSON.parse(cleanedText);
-    } catch (parseErr) {
-      console.error(`[FarmerGPT] JSON parsing failed for OpenRouter output:`, parseErr.message);
-      return res.status(502).json({
-        success: false,
-        error: 'AI_ANALYSIS_FAILED',
-        message: 'Weather analysis failed. Please try again.'
-      });
+    } catch (parseErr1) {
+      try {
+        const sanitized = cleanedText.replace(/[\r\n\t]/g, ' ');
+        parsedAdvice = JSON.parse(sanitized);
+      } catch (parseErr2) {
+        console.error(`[FarmerGPT] JSON parsing failed for OpenRouter output:`, parseErr2.message);
+        return res.status(502).json({
+          success: false,
+          error: 'AI_ANALYSIS_FAILED',
+          message: 'Weather analysis failed. Please try again.'
+        });
+      }
     }
 
     console.log(`[FarmerGPT] OpenRouter analysis received`);

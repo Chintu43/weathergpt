@@ -4,6 +4,8 @@ import { useAuth } from '../auth/AuthContext';
 import { useLocationContext } from '../context/LocationContext';
 import { weatherService, getConditionColor } from '../services/weatherService';
 import { requestDeviceLocation, reverseGeocode } from '../services/locationService';
+import { useTranslation } from '../i18n/LanguageContext';
+import { LanguageSelector } from '../components/common/LanguageSelector';
 import {
   SunVisual,
   CloudVisual,
@@ -89,6 +91,7 @@ export function HomePage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { selectedLocation, setSelectedLocation } = useLocationContext();
+  const { t, translateWeatherCondition } = useTranslation();
 
   const [greetingTime, setGreetingTime] = useState(greetingPrefix());
   useEffect(() => { setGreetingTime(greetingPrefix()); }, []);
@@ -505,21 +508,21 @@ export function HomePage() {
 
   const getSectionTitle = (sec) => {
     switch (sec) {
-      case 1: return <h2 className="section-header-title sec-1-title">Weather Timeline</h2>;
-      case 2: return <h2 className="section-header-title sec-2-title">Rain &amp; Outdoor Conditions</h2>;
-      case 3: return <h2 className="section-header-title sec-3-title">What's Happening Across India Today?</h2>;
-      case 4: return <h2 className="section-header-title sec-4-title">Today's Major Weather Events</h2>;
+      case 1: return <h2 className="section-header-title sec-1-title">{t('home.sec1Title')}</h2>;
+      case 2: return <h2 className="section-header-title sec-2-title">{t('home.sec2Title')}</h2>;
+      case 3: return <h2 className="section-header-title sec-3-title">{t('home.sec3Title')}</h2>;
+      case 4: return <h2 className="section-header-title sec-4-title">{t('home.sec4Title')}</h2>;
       default: return null;
     }
   };
 
   const getScrollHintText = () => {
     switch (activeSection) {
-      case 1: return 'Rain & Outdoor Conditions ↓';
-      case 2: return 'Across India Today ↓';
-      case 3: return 'Major Weather Events ↓';
-      case 4: return 'Moving back to Today\'s Weather ↻';
-      default: return 'Explore Weather Timeline ↓';
+      case 1: return `${t('home.hintSec2')}`;
+      case 2: return `${t('home.hintSec3')}`;
+      case 3: return `${t('home.hintSec4')}`;
+      case 4: return `${t('home.hintReturn')}`;
+      default: return `${t('home.hintSec1')}`;
     }
   };
 
@@ -549,6 +552,7 @@ export function HomePage() {
             </div>
           </div>
           <div className="fixed-header-actions">
+            <LanguageSelector compact />
             {showWeather && (
               <div className="dash-location-badge" title="Selected location">
                 <MapPin size={12} />
@@ -563,7 +567,7 @@ export function HomePage() {
             </button>
             <button type="button" className="dash-sync-btn" onClick={handleRefresh} title="Refresh">
               <RefreshCw size={13} className={weatherLoading ? 'spin-animation' : ''} />
-              <span>Refresh</span>
+              <span>{t('common.refresh', 'Refresh')}</span>
             </button>
           </div>
         </div>
@@ -643,7 +647,7 @@ export function HomePage() {
                     <input
                       type="text"
                       className="dash-search-input"
-                      placeholder="Search city, district or location..."
+                      placeholder={t('common.searchPlaceholder')}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       onFocus={() => { if (searchResults.length > 0) setSearchOpen(true); }}
@@ -651,16 +655,16 @@ export function HomePage() {
                     {searchQuery && (
                       <button type="button" className="dash-search-clear" onClick={() => setSearchQuery('')}>×</button>
                     )}
-                    <button type="submit" className="dash-search-submit" disabled={isSearching}>Search</button>
+                    <button type="submit" className="dash-search-submit" disabled={isSearching}>{t('common.search')}</button>
                     <button
                       type="button"
                       className="dash-current-loc-btn"
                       onClick={handleUseCurrentLocation}
                       disabled={isLocating}
-                      title="Use device location"
+                      title={t('common.useCurrentLocation')}
                     >
                       <MapPin size={13} />
-                      <span>{isLocating ? 'Locating…' : 'Use Current Location'}</span>
+                      <span>{isLocating ? t('common.locating') : t('common.useCurrentLocation')}</span>
                     </button>
                   </form>
                   {searchOpen && searchResults.length > 0 && (
@@ -683,23 +687,23 @@ export function HomePage() {
               {weatherLoading ? (
                 <div className="s0-state-box">
                   <div className="dash-spinner" />
-                  <p className="s0-state-text">Fetching live weather…</p>
+                  <p className="s0-state-text">{t('home.fetchingLive')}</p>
                 </div>
               ) : !selectedLocation && !weatherData ? (
                 <div className="s0-state-box">
-                  <p className="s0-state-text">Search for a location to view weather.</p>
-                  <p className="s0-state-hint">Search city, district or click Use Current Location.</p>
+                  <p className="s0-state-text">{t('home.searchPrompt')}</p>
+                  <p className="s0-state-hint">{t('home.searchHint')}</p>
                 </div>
               ) : weatherError ? (
                 <div className="s0-state-box">
                   <AlertCircle size={28} color="#f87171" />
                   <p className="s0-state-text">{weatherError}</p>
-                  {coords && <button type="button" className="dash-retry-btn" onClick={handleRefresh}>Retry</button>}
+                  {coords && <button type="button" className="dash-retry-btn" onClick={handleRefresh}>{t('common.retry')}</button>}
                 </div>
               ) : showWeather ? (
                 <div className="s0-weather-main">
                   {/* Today's Weather heading */}
-                  <h2 className="s0-section-label">Today's Weather</h2>
+                  <h2 className="s0-section-label">{t('home.todaysWeather', "Today's Weather")}</h2>
 
                   {/* Location */}
                   <p className="s0-location-name">{weatherData.location}</p>
@@ -716,61 +720,61 @@ export function HomePage() {
 
                   {/* Condition */}
                   <p className="s0-condition" style={{ color: getConditionColor(weatherData.iconName) }}>
-                    {weatherData.condition}
+                    {translateWeatherCondition(weatherData.condition)}
                   </p>
 
                   {/* Feels Like */}
                   {weatherData.feelsLike !== null && (
-                    <p className="s0-feels-like">Feels like {weatherData.feelsLike}°C</p>
+                    <p className="s0-feels-like">{t('home.feelsLike', 'Feels like')} {weatherData.feelsLike}°C</p>
                   )}
 
                   {/* Individual Metric Pills (clean, sharp, small individual elements) */}
                   <div className="s0-metric-pills">
                     {weatherData.humidity && (
                       <div className="s0-metric-pill">
-                        <span className="s0-pill-label">Humidity</span>
+                        <span className="s0-pill-label">{t('home.humidity', 'Humidity')}</span>
                         <span className="s0-pill-value">{weatherData.humidity}</span>
                       </div>
                     )}
                     {weatherData.windSpeed && (
                       <div className="s0-metric-pill">
-                        <span className="s0-pill-label">Wind</span>
+                        <span className="s0-pill-label">{t('home.windSpeed', 'Wind')}</span>
                         <span className="s0-pill-value">{weatherData.windSpeed}</span>
                       </div>
                     )}
                     {weatherData.windDirection && (
                       <div className="s0-metric-pill">
-                        <span className="s0-pill-label">Direction</span>
+                        <span className="s0-pill-label">{t('home.windDirection', 'Direction')}</span>
                         <span className="s0-pill-value">{weatherData.windDirection}</span>
                       </div>
                     )}
                     {weatherData.visibility && (
                       <div className="s0-metric-pill">
-                        <span className="s0-pill-label">Visibility</span>
+                        <span className="s0-pill-label">{t('home.visibility', 'Visibility')}</span>
                         <span className="s0-pill-value">{weatherData.visibility}</span>
                       </div>
                     )}
                     {weatherData.precipitation && (
                       <div className="s0-metric-pill">
-                        <span className="s0-pill-label">Rainfall</span>
+                        <span className="s0-pill-label">{t('home.rainChance', 'Rainfall')}</span>
                         <span className="s0-pill-value">{weatherData.precipitation}</span>
                       </div>
                     )}
                     {weatherData.pressure && (
                       <div className="s0-metric-pill">
-                        <span className="s0-pill-label">Pressure</span>
+                        <span className="s0-pill-label">{t('home.pressure', 'Pressure')}</span>
                         <span className="s0-pill-value">{weatherData.pressure}</span>
                       </div>
                     )}
                     {weatherData.cloudCover && (
                       <div className="s0-metric-pill">
-                        <span className="s0-pill-label">Cloud Cover</span>
+                        <span className="s0-pill-label">{t('home.cloudCover', 'Cloud Cover')}</span>
                         <span className="s0-pill-value">{weatherData.cloudCover}</span>
                       </div>
                     )}
                     {weatherData.uvIndex != null && (
                       <div className="s0-metric-pill">
-                        <span className="s0-pill-label">UV</span>
+                        <span className="s0-pill-label">{t('home.uvIndex', 'UV')}</span>
                         <span className="s0-pill-value">{weatherData.uvIndex}</span>
                       </div>
                     )}
@@ -779,7 +783,7 @@ export function HomePage() {
                   {/* Forecast Line */}
                   {(weatherData.forecast?.todayMax != null || weatherData.rainChanceForecast) && (
                     <div className="s0-forecast-line">
-                      <span>Forecast:</span>
+                      <span>{t('common.forecast')}:</span>
                       {weatherData.forecast?.todayMax != null && (
                         <span>
                           High {Math.round(weatherData.forecast.todayMax)}°C
@@ -789,16 +793,16 @@ export function HomePage() {
                         </span>
                       )}
                       {weatherData.rainChanceForecast && (
-                        <span>• Rain chance {weatherData.rainChanceForecast}</span>
+                        <span>• {t('home.rainChance')} {weatherData.rainChanceForecast}</span>
                       )}
                     </div>
                   )}
 
                   {/* Source & Updated Line */}
                   <div className="s0-source-line">
-                    <span>Source: {weatherData.dataSource}</span>
+                    <span>{t('common.source')}: {weatherData.dataSource}</span>
                     <span>•</span>
-                    <span>Updated: {weatherData.updateTime}</span>
+                    <span>{t('common.updated')}: {weatherData.updateTime}</span>
                   </div>
                 </div>
               ) : null}
@@ -810,7 +814,7 @@ export function HomePage() {
                   onClick={() => transitionToSection(1)}
                   className="section-scroll-hint"
                 >
-                  <span>Explore Weather Timeline</span>
+                  <span>{t('home.hintSec1')}</span>
                   <ChevronDown size={14} />
                 </button>
               </div>
@@ -856,17 +860,17 @@ export function HomePage() {
                   {activeSection === 1 && (
                     <div className="left-card-glass">
                       <span className="section-badge-pill badge-blue">
-                        <Clock size={12} /><span>Hourly Telemetry</span>
+                        <Clock size={12} /><span>{t('home.hourlyTelemetry')}</span>
                       </span>
-                      <h3 className="section-info-headline">Today's weather through the day</h3>
+                      <h3 className="section-info-headline">{t('home.todayProgression')}</h3>
                       <p className="section-info-desc">
-                        High-resolution 8-point forecast progression based on live Open-Meteo atmospheric metrics for {selectedLocation?.city || 'your area'}.
+                        {t('home.hourlyDesc')} {selectedLocation?.city || 'your area'}.
                       </p>
                       {(weatherData?.forecast?.todayMax != null || weatherData?.rainChanceForecast) && (
                         <div className="left-summary-box">
                           {weatherData.forecast?.todayMax != null && (
                             <div className="left-summary-row">
-                              <span className="left-summary-label">Day High / Low</span>
+                              <span className="left-summary-label">{t('home.dayHighLow')}</span>
                               <span className="left-summary-value">
                                 {Math.round(weatherData.forecast.todayMax)}°C / {Math.round(weatherData.forecast.todayMin || 0)}°C
                               </span>
@@ -874,7 +878,7 @@ export function HomePage() {
                           )}
                           {weatherData.rainChanceForecast && (
                             <div className="left-summary-row">
-                              <span className="left-summary-label">Peak Rain Chance</span>
+                              <span className="left-summary-label">{t('home.peakRainChance')}</span>
                               <span className="left-summary-value sky">{weatherData.rainChanceForecast}</span>
                             </div>
                           )}
@@ -886,11 +890,11 @@ export function HomePage() {
                   {activeSection === 2 && (
                     <div className="left-card-glass">
                       <span className="section-badge-pill badge-teal">
-                        <Droplets size={12} /><span>Atmospheric Insights</span>
+                        <Droplets size={12} /><span>{t('home.atmosphericInsights')}</span>
                       </span>
-                      <h3 className="section-info-headline">Outdoor Advisory &amp; Solar Cycle</h3>
+                      <h3 className="section-info-headline">{t('home.outdoorSolarCycle')}</h3>
                       <p className="section-info-desc">
-                        Atmospheric clarity, humidity, and localized sunrise &amp; sunset schedule for {selectedLocation?.city || 'your location'}.
+                        {t('home.outdoorDesc')} {selectedLocation?.city || 'your location'}.
                       </p>
                       {weatherData?.outdoorCondition && (
                         <div
@@ -918,11 +922,11 @@ export function HomePage() {
                   {activeSection === 3 && (
                     <div className="left-card-glass">
                       <span className="section-badge-pill badge-teal">
-                        <MapPin size={12} /><span>Subcontinent Radar</span>
+                        <MapPin size={12} /><span>{t('home.subcontinentRadar')}</span>
                       </span>
-                      <h3 className="section-info-headline">Major weather activity across India today</h3>
+                      <h3 className="section-info-headline">{t('home.indiaWeatherHeader')}</h3>
                       <p className="section-info-desc">
-                        India Weather Intelligence monitors live monsoon movements, thermal indices, and localized alerts across all Indian states.
+                        {t('home.indiaWeatherDesc')}
                       </p>
                     </div>
                   )}
@@ -930,19 +934,19 @@ export function HomePage() {
                   {activeSection === 4 && (
                     <div className="left-card-glass">
                       <span className="section-badge-pill badge-purple">
-                        <ShieldAlert size={12} /><span>Critical Alerts</span>
+                        <ShieldAlert size={12} /><span>{t('home.criticalAlerts')}</span>
                       </span>
-                      <h3 className="section-info-headline">Today's Major Weather Events</h3>
+                      <h3 className="section-info-headline">{t('home.majorEventsHeader')}</h3>
                       <p className="section-info-desc">
-                        High-priority meteorological warnings, active storm tracking, and national weather anomalies.
+                        {t('home.majorEventsDesc')}
                       </p>
                       <button
                         type="button"
                         className="dash-link-action"
                         onClick={() => navigate('/alerts')}
-                        aria-label="View all detailed alerts"
+                        aria-label={t('home.viewAllAlerts')}
                       >
-                        <span>View all detailed alerts</span>
+                        <span>{t('home.viewAllAlerts')}</span>
                         <ArrowRight size={14} />
                       </button>
                     </div>
@@ -961,7 +965,7 @@ export function HomePage() {
                             key={`${item.timeIso || idx}`}
                             className={`weather-timeline-card ${item.isNow ? 'is-now-card' : ''}`}
                           >
-                            <div className="timeline-card-badge">{item.isNow ? 'Observed' : 'Forecast'}</div>
+                            <div className="timeline-card-badge">{item.isNow ? t('common.observed') : t('common.forecast')}</div>
                             <span className="timeline-time">{item.time}</span>
                             <div className="timeline-icon">
                               {renderWeatherIcon(item.iconName, 24, getConditionColor(item.iconName))}
@@ -969,7 +973,7 @@ export function HomePage() {
                             <span className="timeline-temp" style={{ color: getConditionColor(item.iconName) }}>
                               {item.temp}°C
                             </span>
-                            <span className="timeline-cond">{item.condition}</span>
+                            <span className="timeline-cond">{translateWeatherCondition(item.condition)}</span>
                             {item.rainChance && (
                               <div className="timeline-rain-chip">
                                 <CloudRain size={11} />
@@ -981,7 +985,7 @@ export function HomePage() {
                       </div>
                     ) : (
                       <div className="dash-empty-box">
-                        <p>Select a location to view the 8-point timeline.</p>
+                        <p>{t('home.timelineEmpty')}</p>
                       </div>
                     )
                   )}
@@ -993,36 +997,36 @@ export function HomePage() {
                         <div className="dash-rain-stat">
                           <div className="dash-rain-icon-box"><CloudRain size={18} color="var(--weather-rain)" /></div>
                           <div className="dash-rain-info">
-                            <span className="dash-rain-label">Rain Chance</span>
-                            <span className="dash-rain-value">{weatherData.rainChanceForecast || 'Data unavailable'}</span>
-                            <span className="dash-rain-sub">{weatherData.rainIntensity || 'Data unavailable'}</span>
+                            <span className="dash-rain-label">{t('home.rainChance')}</span>
+                            <span className="dash-rain-value">{weatherData.rainChanceForecast || t('common.unavailable')}</span>
+                            <span className="dash-rain-sub">{weatherData.rainIntensity || t('common.unavailable')}</span>
                           </div>
                         </div>
 
                         <div className="dash-rain-stat">
                           <div className="dash-rain-icon-box"><Wind size={18} color="var(--weather-wind)" /></div>
                           <div className="dash-rain-info">
-                            <span className="dash-rain-label">Wind Speed</span>
-                            <span className="dash-rain-value">{weatherData.windSpeed || 'Data unavailable'}</span>
-                            <span className="dash-rain-sub">{weatherData.windDirection || 'Direction unavailable'}</span>
+                            <span className="dash-rain-label">{t('home.windSpeed')}</span>
+                            <span className="dash-rain-value">{weatherData.windSpeed || t('common.unavailable')}</span>
+                            <span className="dash-rain-sub">{weatherData.windDirection || t('common.unavailable')}</span>
                           </div>
                         </div>
 
                         <div className="dash-rain-stat">
                           <div className="dash-rain-icon-box"><Droplets size={18} color="var(--weather-rain)" /></div>
                           <div className="dash-rain-info">
-                            <span className="dash-rain-label">Relative Humidity</span>
-                            <span className="dash-rain-value">{weatherData.humidity || 'Data unavailable'}</span>
-                            <span className="dash-rain-sub">Observed</span>
+                            <span className="dash-rain-label">{t('home.humidity')}</span>
+                            <span className="dash-rain-value">{weatherData.humidity || t('common.unavailable')}</span>
+                            <span className="dash-rain-sub">{t('common.observed')}</span>
                           </div>
                         </div>
 
                         <div className="dash-rain-stat">
                           <div className="dash-rain-icon-box"><Eye size={18} color="var(--text-location)" /></div>
                           <div className="dash-rain-info">
-                            <span className="dash-rain-label">Visibility</span>
-                            <span className="dash-rain-value">{weatherData.visibility || 'Data unavailable'}</span>
-                            <span className="dash-rain-sub">Atmospheric clarity</span>
+                            <span className="dash-rain-label">{t('home.visibility')}</span>
+                            <span className="dash-rain-value">{weatherData.visibility || t('common.unavailable')}</span>
+                            <span className="dash-rain-sub">{t('home.atmosphericClarity')}</span>
                           </div>
                         </div>
 
@@ -1032,9 +1036,9 @@ export function HomePage() {
                             <span style={{ fontSize: '20px' }}>🌅</span>
                           </div>
                           <div className="dash-rain-info">
-                            <span className="dash-rain-label">SUNRISE</span>
-                            <span className="dash-rain-value">{weatherData.sunrise || 'Data unavailable'}</span>
-                            <span className="dash-rain-sub">{selectedLocation?.city || selectedLocation?.name || 'Local Time'}</span>
+                            <span className="dash-rain-label">{t('home.sunrise')}</span>
+                            <span className="dash-rain-value">{weatherData.sunrise || t('common.unavailable')}</span>
+                            <span className="dash-rain-sub">{selectedLocation?.city || selectedLocation?.name || t('home.localTime')}</span>
                           </div>
                         </div>
 
@@ -1044,25 +1048,25 @@ export function HomePage() {
                             <span style={{ fontSize: '20px' }}>🌇</span>
                           </div>
                           <div className="dash-rain-info">
-                            <span className="dash-rain-label">SUNSET</span>
-                            <span className="dash-rain-value">{weatherData.sunset || 'Data unavailable'}</span>
-                            <span className="dash-rain-sub">{selectedLocation?.city || selectedLocation?.name || 'Local Time'}</span>
+                            <span className="dash-rain-label">{t('home.sunset')}</span>
+                            <span className="dash-rain-value">{weatherData.sunset || t('common.unavailable')}</span>
+                            <span className="dash-rain-sub">{selectedLocation?.city || selectedLocation?.name || t('home.localTime')}</span>
                           </div>
                         </div>
                       </div>
                     ) : (
-                      <div className="dash-empty-box"><p>Connect a location to inspect outdoor telemetry.</p></div>
+                      <div className="dash-empty-box"><p>{t('home.outdoorEmpty')}</p></div>
                     )
                   )}
 
                   {/* Section 3: India Weather Intelligence Cards */}
                   {activeSection === 3 && (
                     indiaLoading ? (
-                      <div className="dash-loading-box compact"><p>Checking nationwide updates…</p></div>
+                      <div className="dash-loading-box compact"><p>{t('home.checkingNationwide')}</p></div>
                     ) : indiaError ? (
                       <div className="dash-empty-box"><p>{indiaError}</p></div>
                     ) : indiaEvents.length === 0 ? (
-                      <div className="dash-empty-box"><p>No major weather event reported across India.</p></div>
+                      <div className="dash-empty-box"><p>{t('home.noIndiaEvents')}</p></div>
                     ) : (
                       <div className="cinematic-events-stack">
                         {indiaEvents.slice(0, 2).map((evt) => (
@@ -1081,8 +1085,8 @@ export function HomePage() {
                             </div>
                             <p className="dash-card-desc">{evt.explanation}</p>
                             <div className="dash-card-meta-line">
-                              <span>Source: {evt.source}</span>
-                              <span>Updated: {evt.updated}</span>
+                              <span>{t('common.source')}: {evt.source}</span>
+                              <span>{t('common.updated')}: {evt.updated}</span>
                             </div>
                           </div>
                         ))}
@@ -1093,11 +1097,11 @@ export function HomePage() {
                   {/* Section 4: Today's Major Weather Events */}
                   {activeSection === 4 && (
                     majorLoading ? (
-                      <div className="dash-loading-box compact"><p>Loading weather anomalies…</p></div>
+                      <div className="dash-loading-box compact"><p>{t('home.loadingAnomalies')}</p></div>
                     ) : majorError ? (
                       <div className="dash-empty-box"><p>{majorError}</p></div>
                     ) : majorEvents.length === 0 ? (
-                      <div className="dash-empty-box"><p>No major weather events currently reported.</p></div>
+                      <div className="dash-empty-box"><p>{t('home.noMajorEvents')}</p></div>
                     ) : (
                       <div className="cinematic-events-stack">
                         {majorEvents.slice(0, 2).map((evt) => (
@@ -1111,8 +1115,8 @@ export function HomePage() {
                             </div>
                             <p className="dash-card-desc">{evt.description}</p>
                             <div className="dash-card-meta-line">
-                              <span>Source: {evt.source}</span>
-                              <span>Updated: {evt.updated}</span>
+                              <span>{t('common.source')}: {evt.source}</span>
+                              <span>{t('common.updated')}: {evt.updated}</span>
                             </div>
                           </div>
                         ))}

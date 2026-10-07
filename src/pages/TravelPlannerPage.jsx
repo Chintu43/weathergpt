@@ -17,6 +17,9 @@ import {
 } from 'lucide-react';
 import { BackButton } from '../components/common/BackButton';
 import { weatherService, interpretWeatherCode } from '../services/weatherService';
+import { useTranslation } from '../i18n/LanguageContext';
+import { getLocalizedLocationLabel } from '../utils/locationLocalization';
+import { AiResponseErrorBoundary } from '../components/common/AiResponseErrorBoundary';
 
 const POPULAR_DESTINATIONS = [
   { name: 'Goa, India', lat: 15.2993, lon: 74.124 },
@@ -27,6 +30,7 @@ const POPULAR_DESTINATIONS = [
 ];
 
 export function TravelPlannerPage() {
+  const { t, language, translateWeatherCondition } = useTranslation();
   const todayStr = new Date().toISOString().split('T')[0];
   const maxDate = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
@@ -95,7 +99,8 @@ export function TravelPlannerPage() {
       selectedDest.lat,
       selectedDest.lon,
       travelDate,
-      selectedDest.name
+      selectedDest.name,
+      language
     );
 
     setLoading(false);
@@ -114,10 +119,10 @@ export function TravelPlannerPage() {
         <div>
           <h2 className="dash-page-heading flex items-center gap-2">
             <Compass size={22} color="var(--travel-good)" />
-            <span>Travel Planner</span>
+            <span>{t('travel.title')}</span>
           </h2>
           <p className="dash-section-sub">
-            Real weather intelligence and forecast for your upcoming journey
+            {t('travel.subtitle')}
           </p>
         </div>
       </header>
@@ -129,13 +134,13 @@ export function TravelPlannerPage() {
           <div className="travel-field" ref={searchBoxRef}>
             <label className="travel-label">
               <MapPin size={14} />
-              <span>Destination</span>
+              <span>{t('travel.destLabel')}</span>
             </label>
             <div className="travel-input-wrapper">
               <input
                 type="text"
                 className="travel-input"
-                placeholder="Search Indian city, hill station, tourist spot..."
+                placeholder={t('travel.destPlaceholder')}
                 value={destQuery}
                 onChange={(e) => {
                   setDestQuery(e.target.value);
@@ -159,9 +164,9 @@ export function TravelPlannerPage() {
                   >
                     <MapPin size={14} className="dash-item-pin" />
                     <div className="dash-item-text">
-                      <span className="dash-item-city">{loc.cityName}</span>
+                      <span className="dash-item-city">{getLocalizedLocationLabel(loc.cityName, language)}</span>
                       <span className="dash-item-meta">
-                        {loc.state ? `${loc.state}, ` : ''}
+                        {loc.state ? `${getLocalizedLocationLabel(loc.state, language)}, ` : ''}
                         {loc.country}
                       </span>
                     </div>
@@ -175,7 +180,7 @@ export function TravelPlannerPage() {
           <div className="travel-field">
             <label className="travel-label">
               <Calendar size={14} />
-              <span>Travel Date (Up to 16 Days)</span>
+              <span>{t('travel.dateLabel')}</span>
             </label>
             <input
               type="date"
@@ -198,7 +203,7 @@ export function TravelPlannerPage() {
                 checked={isVacation}
                 onChange={(e) => setIsVacation(e.target.checked)}
               />
-              <span>Planning a leisure vacation</span>
+              <span>{t('travel.leisureToggle')}</span>
             </label>
 
             <button
@@ -207,14 +212,14 @@ export function TravelPlannerPage() {
               disabled={loading || !destQuery}
             >
               <Plane size={16} />
-              <span>{loading ? 'Checking Weather…' : 'Check Travel Weather'}</span>
+              <span>{loading ? t('common.loading') : t('travel.submitBtn')}</span>
             </button>
           </div>
         </form>
 
         {/* Quick popular suggestions */}
         <div className="travel-quick-destinations">
-          <span className="travel-quick-label">Popular Spots:</span>
+          <span className="travel-quick-label">{t('home.popularLocations')}:</span>
           {POPULAR_DESTINATIONS.map((d) => (
             <button
               key={d.name}
@@ -222,7 +227,7 @@ export function TravelPlannerPage() {
               className="travel-quick-chip"
               onClick={() => handleSelectDest(d)}
             >
-              {d.name.split(',')[0]}
+              {getLocalizedLocationLabel(d.name.split(',')[0], language)}
             </button>
           ))}
         </div>
@@ -240,31 +245,32 @@ export function TravelPlannerPage() {
       {loading && (
         <div className="dash-loading-box">
           <div className="dash-spinner" />
-          <p>Fetching accurate 16-day atmospheric telemetry for your destination…</p>
+          <p>{t('travel.loading')}</p>
         </div>
       )}
 
       {travelPlan && !loading && (
+        <AiResponseErrorBoundary>
         <section className="travel-result-section">
           {/* Main Hero Summary */}
           <div className="travel-result-hero">
             <div className="travel-hero-top">
               <div>
-                <span className="travel-tag">Official Travel Forecast</span>
-                <h3 className="travel-dest-title">{travelPlan.destination}</h3>
+                <span className="travel-tag">{t('travel.forecastHeader')}</span>
+                <h3 className="travel-dest-title">{getLocalizedLocationLabel(travelPlan.destination, language)}</h3>
                 <p className="travel-date-badge">
                   <Calendar size={14} />
                   <span>
-                    Travel Date: {travelPlan.date} • {travelPlan.timezone}
+                    {t('travel.dateLabel')}: {travelPlan.date} • {travelPlan.timezone}
                   </span>
                 </p>
               </div>
 
               <div className="travel-hero-temp">
                 <span className="travel-temp-val">{travelPlan.temperatureDisplay}</span>
-                <span className="travel-condition-val">{travelPlan.condition}</span>
+                <span className="travel-condition-val">{translateWeatherCondition(travelPlan.condition)}</span>
                 <span className="travel-feels-val">
-                  Peak feels like {travelPlan.feelsLike}°C
+                  {t('home.feelsLike')} {travelPlan.feelsLike}°C
                 </span>
               </div>
             </div>
@@ -281,7 +287,7 @@ export function TravelPlannerPage() {
                 >
                   {travelPlan.outdoorStatus}
                 </span>
-                <span className="travel-outdoor-note">Travel Recommendation</span>
+                <span className="travel-outdoor-note">{t('travel.recommendation')}</span>
               </div>
               <p className="travel-outdoor-advice">{travelPlan.outdoorAdvice}</p>
             </div>
@@ -293,7 +299,7 @@ export function TravelPlannerPage() {
                   <CloudRain size={18} color="var(--weather-rain)" />
                 </div>
                 <div>
-                  <span className="travel-metric-label">Precipitation Chance</span>
+                  <span className="travel-metric-label">{t('home.rainChance')}</span>
                   <span className="travel-metric-val" style={{ color: "var(--weather-rain)" }}>{travelPlan.rainProbability}</span>
                   <span className="travel-metric-sub">{travelPlan.rainfall}</span>
                 </div>
@@ -304,9 +310,9 @@ export function TravelPlannerPage() {
                   <Wind size={18} color="var(--weather-wind)" />
                 </div>
                 <div>
-                  <span className="travel-metric-label">Max Wind Speed</span>
+                  <span className="travel-metric-label">{t('home.windSpeed')}</span>
                   <span className="travel-metric-val" style={{ color: "var(--weather-wind)" }}>{travelPlan.windSpeed}</span>
-                  <span className="travel-metric-sub">Surface gusts</span>
+                  <span className="travel-metric-sub">{t('home.windSpeed')}</span>
                 </div>
               </div>
 
@@ -315,7 +321,7 @@ export function TravelPlannerPage() {
                   <Droplets size={18} color="var(--weather-rain)" />
                 </div>
                 <div>
-                  <span className="travel-metric-label">Average Humidity</span>
+                  <span className="travel-metric-label">{t('home.humidity')}</span>
                   <span className="travel-metric-val" style={{ color: "var(--weather-rain)" }}>{travelPlan.humidity}</span>
                 </div>
               </div>
@@ -325,7 +331,7 @@ export function TravelPlannerPage() {
                   <Eye size={18} color="var(--text-location)" />
                 </div>
                 <div>
-                  <span className="travel-metric-label">Atmospheric Visibility</span>
+                  <span className="travel-metric-label">{t('home.visibility')}</span>
                   <span className="travel-metric-val" style={{ color: "var(--text-location)" }}>{travelPlan.visibility}</span>
                 </div>
               </div>
@@ -335,7 +341,7 @@ export function TravelPlannerPage() {
                   <Sunrise size={18} className="text-amber-400" />
                 </div>
                 <div>
-                  <span className="travel-metric-label">Sunrise</span>
+                  <span className="travel-metric-label">{t('home.sunrise')}</span>
                   <span className="travel-metric-val">{travelPlan.sunrise}</span>
                 </div>
               </div>
@@ -345,7 +351,7 @@ export function TravelPlannerPage() {
                   <Sunset size={18} className="text-orange-400" />
                 </div>
                 <div>
-                  <span className="travel-metric-label">Sunset</span>
+                  <span className="travel-metric-label">{t('home.sunset')}</span>
                   <span className="travel-metric-val">{travelPlan.sunset}</span>
                 </div>
               </div>
@@ -355,23 +361,22 @@ export function TravelPlannerPage() {
             <div className="travel-alerts-card">
               <div className="travel-alerts-header">
                 <AlertTriangle size={16} className="text-amber-400" />
-                <h4>Severe Weather & Disaster Watch</h4>
+                <h4>{t('alerts.title')} &amp; {t('home.majorEvents')}</h4>
               </div>
               {travelPlan.officialAlerts?.length > 0 ? (
                 <div className="travel-alerts-list">
                   {travelPlan.officialAlerts.map((alt) => (
                     <div key={alt.id} className="travel-alert-entry">
-                      <span className="travel-alert-badge">OFFICIAL WARNING</span>
+                      <span className="travel-alert-badge">{t('alerts.officialSource')}</span>
                       <strong>{alt.title}</strong>
                       <p>{alt.description}</p>
-                      <span className="travel-alert-source">Source: {alt.source}</span>
+                      <span className="travel-alert-source">{t('common.source')}: {alt.source}</span>
                     </div>
                   ))}
                 </div>
               ) : (
                 <p className="travel-no-alert">
-                  No active severe weather warnings currently reported by IMD / NDMA for{' '}
-                  {travelPlan.destination}.
+                  {t('alerts.noAlertsMessage')} ({getLocalizedLocationLabel(travelPlan.destination, language)})
                 </p>
               )}
             </div>
@@ -387,10 +392,11 @@ export function TravelPlannerPage() {
             </div>
 
             <div className="travel-source-footer">
-              <span>{travelPlan.dataSource}</span>
+              <span>{t('common.source')}: {travelPlan.dataSource}</span>
             </div>
           </div>
         </section>
+        </AiResponseErrorBoundary>
       )}
     </div>
   );

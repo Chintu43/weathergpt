@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { BackButton } from '../components/common/BackButton';
+import { useTranslation } from '../i18n/LanguageContext';
 import {
   User,
   Mail,
@@ -16,6 +17,7 @@ import {
 } from 'lucide-react';
 
 export function ProfilePage() {
+  const { t } = useTranslation();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -39,8 +41,8 @@ export function ProfilePage() {
       <BackButton />
       <header className="page-header">
         <div>
-          <h2 className="page-title">User Profile & Intelligence Settings</h2>
-          <p className="page-subtitle">Manage credentials, telemetry feeds, and station preferences</p>
+          <h2 className="page-title">{t('profile.title')}</h2>
+          <p className="page-subtitle">{t('profile.subtitle')}</p>
         </div>
       </header>
 

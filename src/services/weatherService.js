@@ -527,7 +527,7 @@ export const weatherService = {
     }
   },
 
-  async getTravelPlanWeather(lat, lon, dateStr, destinationName) {
+  async getTravelPlanWeather(lat, lon, dateStr, destinationName, language = 'en') {
     if (!destinationName || !dateStr) {
       return { success: false, error: 'Destination and travel date are required.' };
     }
@@ -540,7 +540,8 @@ export const weatherService = {
           destination: destinationName,
           date: dateStr,
           latitude: lat,
-          longitude: lon
+          longitude: lon,
+          language
         })
       });
 
@@ -699,7 +700,7 @@ export const weatherService = {
     }
   },
 
-  async getFarmerAdvisory(state, district, question) {
+  async getFarmerAdvisory(state, district, question, language = 'en') {
     if (!state || !district) {
       return {
         success: false,
@@ -719,7 +720,7 @@ export const weatherService = {
       const response = await fetch(`${API_BASE_URL}/api/farmer/advice`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ state, district, question: q })
+        body: JSON.stringify({ state, district, question: q, language })
       });
 
       const data = await response.json();
