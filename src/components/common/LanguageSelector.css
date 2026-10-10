@@ -133,19 +133,50 @@
 
 /* Compact mode for tight spaces */
 .language-selector-container.is-compact .language-selector-btn {
-  padding: 0.4rem 0.65rem;
-  font-size: 0.72rem;
+  padding: 0.3rem 0.55rem;
+  font-size: 0.70rem;
+  gap: 4px;
+}
+
+.language-selector-btn:active {
+  transform: scale(0.94);
+  background: rgba(56, 189, 248, 0.2);
+  transition: transform 0.08s ease;
+}
+
+.language-selector-btn:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
 }
 
 @media (max-width: 640px) {
   .language-selector-btn {
-    padding: 0.45rem 0.7rem;
-    font-size: 0.72rem;
+    padding: 0.32rem 0.52rem;
+    font-size: 0.68rem;
+    gap: 4px;
+  }
+  .lang-globe-icon {
+    width: 13px;
+    height: 13px;
+  }
+  .lang-arrow {
+    width: 11px;
+    height: 11px;
   }
   .lang-btn-label {
-    max-width: 70px;
+    max-width: 58px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+}
+
+@media (max-width: 380px) {
+  .language-selector-btn {
+    padding: 0.28rem 0.44rem;
+    font-size: 0.64rem;
+  }
+  .lang-btn-label {
+    max-width: 48px;
   }
 }

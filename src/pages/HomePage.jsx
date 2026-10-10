@@ -557,10 +557,10 @@ export function HomePage() {
                 <span>{weatherData.location.split(',')[0]}</span>
               </div>
             )}
-            <button type="button" className="dash-icon-btn" onClick={() => navigate('/alerts')} aria-label="Alerts">
+            <button type="button" className="dash-icon-btn dash-header-alerts-btn" onClick={() => navigate('/alerts')} aria-label="Alerts">
               <Bell size={17} />
             </button>
-            <button type="button" className="dash-icon-btn" onClick={() => navigate('/profile')} aria-label="Profile">
+            <button type="button" className="dash-icon-btn dash-header-profile-btn" onClick={() => navigate('/profile')} aria-label="Profile">
               <User size={17} />
             </button>
             <button type="button" className="dash-sync-btn" onClick={handleRefresh} title="Refresh">
@@ -641,29 +641,33 @@ export function HomePage() {
                 {/* Search Bar - directly below large greeting, left-aligned */}
                 <div className="s0-search-area" ref={searchContainerRef}>
                   <form className="dash-search-bar" onSubmit={handleSearchSubmit}>
-                    <Search size={16} className="dash-search-icon" />
-                    <input
-                      type="text"
-                      className="dash-search-input"
-                      placeholder={t('common.searchPlaceholder')}
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onFocus={() => { if (searchResults.length > 0) setSearchOpen(true); }}
-                    />
-                    {searchQuery && (
-                      <button type="button" className="dash-search-clear" onClick={() => setSearchQuery('')}>×</button>
-                    )}
-                    <button type="submit" className="dash-search-submit" disabled={isSearching}>{t('common.search')}</button>
-                    <button
-                      type="button"
-                      className="dash-current-loc-btn"
-                      onClick={handleUseCurrentLocation}
-                      disabled={isLocating}
-                      title={t('common.useCurrentLocation')}
-                    >
-                      <MapPin size={13} />
-                      <span>{isLocating ? t('common.locating') : t('common.useCurrentLocation')}</span>
-                    </button>
+                    <div className="dash-search-input-row">
+                      <Search size={16} className="dash-search-icon" />
+                      <input
+                        type="text"
+                        className="dash-search-input"
+                        placeholder={t('common.searchPlaceholder')}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onFocus={() => { if (searchResults.length > 0) setSearchOpen(true); }}
+                      />
+                      {searchQuery && (
+                        <button type="button" className="dash-search-clear" onClick={() => setSearchQuery('')}>×</button>
+                      )}
+                    </div>
+                    <div className="dash-search-actions-row">
+                      <button type="submit" className="dash-search-submit" disabled={isSearching}>{t('common.search')}</button>
+                      <button
+                        type="button"
+                        className="dash-current-loc-btn"
+                        onClick={handleUseCurrentLocation}
+                        disabled={isLocating}
+                        title={t('common.useCurrentLocation')}
+                      >
+                        <MapPin size={13} />
+                        <span>{isLocating ? t('common.locating') : t('common.useCurrentLocation')}</span>
+                      </button>
+                    </div>
                   </form>
                   {searchOpen && searchResults.length > 0 && (
                     <div className="dash-search-dropdown">

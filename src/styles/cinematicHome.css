@@ -1110,12 +1110,12 @@
 @media (max-width: 640px) {
   .home-fixed-header {
     height: auto;
-    min-height: 54px;
-    padding: 6px 10px;
+    min-height: 50px;
+    padding: 5px 8px;
   }
 
   .home-cinematic-stage {
-    padding-top: 74px; /* Ensure greeting is completely visible below the fixed header */
+    padding-top: 72px; /* Ensure greeting is completely visible below the fixed header */
     padding-bottom: 84px;
     padding-left: 12px;
     padding-right: 12px;
@@ -1123,30 +1123,33 @@
 
   .fixed-header-inner {
     flex-wrap: nowrap;
-    gap: 8px;
+    gap: 6px;
     justify-content: space-between;
     align-items: center;
   }
 
   .fixed-header-brand {
-    gap: 6px;
+    gap: 5px;
     min-width: 0;
-    flex-shrink: 1;
-    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
   }
 
   .brand-sun-svg {
-    width: 26px;
-    height: 26px;
+    width: 22px;
+    height: 22px;
     flex-shrink: 0;
   }
 
+  /* Display full word WEATHERGPT on one line without ellipsis or clipping */
   .dash-brand-title {
-    font-size: clamp(0.78rem, 3.2vw, 0.95rem);
+    font-size: clamp(0.72rem, 3.1vw, 0.90rem);
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow: visible;
+    text-overflow: clip;
     margin: 0;
+    letter-spacing: -0.01em;
   }
 
   .dash-brand-sub {
@@ -1160,17 +1163,21 @@
     align-items: center;
   }
 
+  /* Requirement: Remove the standalone Profile/User button from the mobile top header */
+  .dash-header-profile-btn {
+    display: none !important;
+  }
+
   .dash-icon-btn {
-    width: 30px;
-    height: 30px;
-    padding: 5px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 4px;
+    border-radius: 9px;
   }
 
   .dash-sync-btn {
-    padding: 5px 8px;
+    padding: 4px 7px;
+    border-radius: 10px;
   }
 
   .dash-sync-btn span {
@@ -1178,84 +1185,104 @@
   }
 
   .dash-location-badge {
-    padding: 4px 7px;
-    font-size: 0.70rem;
-    max-width: 82px;
+    padding: 3px 6px;
+    font-size: 0.68rem;
+    max-width: 75px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  /* Search Bar: Flexible layout */
+  /* ── Mobile Search Bar: Two Semantic Rows ──
+     Row 1: Search icon & wide full-width flexible text input
+     Row 2: Compact Search button & Use Current Location button */
   .s0-search-area .dash-search-bar {
     display: flex;
-    flex-wrap: wrap;
-    border-radius: 18px;
-    padding: 6px 8px;
-    gap: 6px;
+    flex-direction: column;
+    align-items: stretch;
+    border-radius: 20px;
+    padding: 8px 12px;
+    gap: 8px;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .dash-search-input-row {
+    display: flex;
     align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .dash-search-input {
     width: 100%;
+    flex: 1 1 auto;
     min-width: 0;
-    flex: 1 1 100%;
-    order: 1;
-    font-size: 0.85rem;
-    padding: 2px 4px;
+    font-size: 0.88rem;
+    padding: 3px 0;
+  }
+
+  .dash-search-actions-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .dash-search-submit {
-    order: 2;
-    flex: 1 1 auto;
-    min-width: 75px;
-    padding: 6px 10px;
-    font-size: 0.76rem;
+    flex: 1 1 0;
+    min-width: 70px;
+    padding: 7px 10px;
+    font-size: 0.77rem;
     text-align: center;
     justify-content: center;
     white-space: nowrap;
+    border-radius: 12px;
   }
 
   .dash-current-loc-btn {
-    order: 3;
-    flex: 1.5 1 auto;
+    flex: 1.6 1 0;
     min-width: 110px;
     justify-content: center;
-    padding: 6px 8px;
-    font-size: 0.74rem;
+    padding: 7px 10px;
+    font-size: 0.75rem;
     white-space: nowrap;
+    border-radius: 12px;
   }
 }
 
 @media (max-width: 480px) {
   .home-fixed-header {
-    min-height: 50px;
-    padding: 4px 8px;
+    min-height: 48px;
+    padding: 4px 6px;
   }
 
   .home-cinematic-stage {
-    padding-top: 70px;
+    padding-top: 68px;
     padding-left: 8px;
     padding-right: 8px;
     padding-bottom: 78px;
   }
 
   .fixed-header-inner {
-    gap: 6px;
-  }
-
-  .fixed-header-brand {
     gap: 5px;
   }
 
+  .fixed-header-brand {
+    gap: 4px;
+  }
+
   .dash-brand-title {
-    font-size: clamp(0.72rem, 3.4vw, 0.85rem);
+    font-size: clamp(0.68rem, 3.2vw, 0.78rem);
     letter-spacing: -0.01em;
   }
 
   .brand-sun-svg {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
   }
 
   .fixed-header-actions {
@@ -1263,15 +1290,15 @@
   }
 
   .dash-icon-btn {
-    width: 27px;
-    height: 27px;
-    padding: 4px;
+    width: 26px;
+    height: 26px;
+    padding: 3px;
   }
 
   .dash-location-badge {
-    padding: 3px 6px;
-    font-size: 0.65rem;
-    max-width: 65px;
+    padding: 3px 5px;
+    font-size: 0.64rem;
+    max-width: 60px;
   }
 
   .s0-greeting-heading {
@@ -1319,7 +1346,7 @@
 
 @media (max-width: 380px) {
   .home-fixed-header {
-    padding: 4px 6px;
+    padding: 4px 5px;
   }
 
   .fixed-header-inner {
@@ -1327,49 +1354,7 @@
   }
 
   .dash-brand-title {
-    font-size: 0.72rem;
-  }
-
-  .brand-sun-svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  .fixed-header-actions {
-    gap: 2px;
-  }
-
-  .dash-icon-btn {
-    width: 25px;
-    height: 25px;
-    padding: 3px;
-  }
-
-  .dash-location-badge {
-    display: none; /* Hide location badge on sub-380px to prevent control overlap; location is shown in S0 content */
-  }
-
-  .s0-search-area .dash-search-bar {
-    padding: 5px 6px;
-    gap: 4px;
-  }
-
-  .dash-search-submit {
-    min-width: 65px;
-    padding: 5px 8px;
-    font-size: 0.72rem;
-  }
-
-  .dash-current-loc-btn {
-    min-width: 95px;
-    padding: 5px 6px;
-    font-size: 0.70rem;
-  }
-}
-
-@media (max-width: 330px) {
-  .dash-brand-title {
-    font-size: 0.65rem;
+    font-size: 0.66rem;
   }
 
   .brand-sun-svg {
@@ -1377,10 +1362,63 @@
     height: 18px;
   }
 
+  .fixed-header-actions {
+    gap: 2px;
+  }
+
   .dash-icon-btn {
-    width: 23px;
-    height: 23px;
+    width: 24px;
+    height: 24px;
     padding: 2px;
+  }
+
+  .dash-location-badge {
+    display: none; /* Hide location badge on sub-380px; location is shown in S0 content */
+  }
+
+  .s0-search-area .dash-search-bar {
+    padding: 6px 8px;
+    gap: 6px;
+  }
+
+  .dash-search-submit {
+    min-width: 60px;
+    padding: 6px 8px;
+    font-size: 0.72rem;
+  }
+
+  .dash-current-loc-btn {
+    min-width: 90px;
+    padding: 6px 8px;
+    font-size: 0.70rem;
+  }
+}
+
+@media (max-width: 330px) {
+  .dash-brand-title {
+    font-size: 0.62rem;
+  }
+
+  .brand-sun-svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .dash-icon-btn {
+    width: 22px;
+    height: 22px;
+    padding: 2px;
+  }
+
+  .dash-search-actions-row {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .dash-search-submit,
+  .dash-current-loc-btn {
+    width: 100%;
+    flex: 1 1 100%;
   }
 }
 
