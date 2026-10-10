@@ -50,12 +50,12 @@ function renderWeatherIcon(iconName, size = 26, color = 'var(--text-primary)') {
   return <IconComponent size={size} color={color} strokeWidth={2} />;
 }
 
-function greetingPrefix() {
+function getGreetingKey() {
   const hour = new Date().getHours();
-  if (hour >= 5 && hour < 12) return 'Good Morning';
-  if (hour >= 12 && hour < 17) return 'Good Afternoon';
-  if (hour >= 17 && hour < 21) return 'Good Evening';
-  return 'Good Night';
+  if (hour >= 5 && hour < 12) return 'home.greetingMorning';
+  if (hour >= 12 && hour < 17) return 'home.greetingAfternoon';
+  if (hour >= 17 && hour < 21) return 'home.greetingEvening';
+  return 'home.greetingNight';
 }
 
 /* Small brand sun beside WEATHERGPT title */
@@ -93,11 +93,9 @@ export function HomePage() {
   const { selectedLocation, setSelectedLocation } = useLocationContext();
   const { t, translateWeatherCondition } = useTranslation();
 
-  const [greetingTime, setGreetingTime] = useState(greetingPrefix());
-  useEffect(() => { setGreetingTime(greetingPrefix()); }, []);
-
+  const greetingPrefixText = t(getGreetingKey(), 'Good day');
   const userName = user?.name?.trim();
-  const fullGreeting = userName ? `${greetingTime}, ${userName.split(' ')[0]}` : greetingTime;
+  const fullGreeting = userName ? `${greetingPrefixText}, ${userName.split(' ')[0]}` : greetingPrefixText;
 
   /* ── Search State ── */
   const [searchQuery, setSearchQuery] = useState('');

@@ -99,6 +99,10 @@
   },
   "home": {
     "greeting": "Good day",
+    "greetingMorning": "Good Morning",
+    "greetingAfternoon": "Good Afternoon",
+    "greetingEvening": "Good Evening",
+    "greetingNight": "Good Night",
     "welcomeSub": "Live atmospheric conditions and regional forecasts",
     "todaysWeather": "Today's Weather",
     "feelsLike": "Feels like",

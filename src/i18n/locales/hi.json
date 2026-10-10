@@ -99,6 +99,10 @@
   },
   "home": {
     "greeting": "शुभ दिन",
+    "greetingMorning": "सुप्रभात",
+    "greetingAfternoon": "शुभ दोपहर",
+    "greetingEvening": "शुभ संध्या",
+    "greetingNight": "शुभ रात्रि",
     "welcomeSub": "लाइव वायुमंडलीय स्थितियां और क्षेत्रीय पूर्वानुमान",
     "todaysWeather": "आज का मौसम",
     "feelsLike": "महसूस होने वाला तापमान",

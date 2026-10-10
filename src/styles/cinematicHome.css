@@ -1110,32 +1110,74 @@
 @media (max-width: 640px) {
   .home-fixed-header {
     height: auto;
-    min-height: 60px;
-    padding: 8px 12px;
+    min-height: 56px;
+    padding: 6px 10px;
+  }
+
+  .home-cinematic-stage {
+    padding-top: 76px; /* Ensure greeting is never hidden beneath header */
+    padding-bottom: 84px;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 
   .fixed-header-inner {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    gap: 8px;
+    justify-content: space-between;
+  }
+
+  .fixed-header-brand {
     gap: 6px;
+    min-width: 0;
+  }
+
+  .brand-sun-svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .dash-brand-title {
+    font-size: 0.95rem;
+    white-space: nowrap;
   }
 
   .dash-brand-sub {
-    font-size: 0.68rem;
+    display: none;
   }
 
   .fixed-header-actions {
     gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .dash-icon-btn {
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+  }
+
+  .dash-sync-btn {
+    padding: 6px 8px;
   }
 
   .dash-sync-btn span {
     display: none;
   }
 
+  .dash-location-badge {
+    padding: 4px 8px;
+    font-size: 0.72rem;
+    max-width: 90px;
+  }
+
   .s0-search-area .dash-search-bar {
+    display: flex;
     flex-wrap: wrap;
     border-radius: 18px;
-    padding: 8px 12px;
-    gap: 8px;
+    padding: 6px 10px;
+    gap: 6px;
+    align-items: center;
   }
 
   .dash-search-input {
@@ -1143,45 +1185,61 @@
     min-width: 0;
     flex: 1 1 100%;
     order: 1;
-    font-size: 0.875rem;
+    font-size: 0.85rem;
   }
 
   .dash-search-submit {
     order: 2;
-    flex: 1 1 auto;
-    padding: 6px 12px;
-    font-size: 0.8rem;
+    flex: 1 1 0;
+    min-width: 80px;
+    padding: 6px 10px;
+    font-size: 0.78rem;
+    text-align: center;
+    justify-content: center;
   }
 
   .dash-current-loc-btn {
     order: 3;
-    flex: 1 1 auto;
+    flex: 1 1 0;
+    min-width: 120px;
     justify-content: center;
     padding: 6px 10px;
-    font-size: 0.78rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
   }
 }
 
 @media (max-width: 480px) {
   .home-fixed-header {
-    padding: 6px 10px;
-  }
-
-  .dash-brand-title {
-    font-size: 1rem;
-  }
-
-  .dash-brand-sub {
-    display: none;
+    min-height: 52px;
+    padding: 5px 8px;
   }
 
   .home-cinematic-stage {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-top: 72px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 80px;
+  }
+
+  .dash-brand-title {
+    font-size: 0.88rem;
+  }
+
+  .brand-sun-svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .dash-icon-btn {
+    width: 28px;
+    height: 28px;
+    padding: 5px;
   }
 
   .s0-greeting-heading {
-    font-size: clamp(16px, 5vw, 22px);
+    font-size: clamp(18px, 5.2vw, 24px);
+    line-height: 1.2;
   }
 
   .s0-temperature {
@@ -1211,9 +1269,9 @@
   }
 
   .floating-section-nav {
-    right: 6px;
-    padding: 5px 3px;
-    gap: 6px;
+    right: 4px;
+    padding: 4px 2px;
+    gap: 5px;
   }
 
   .nav-dot-btn {

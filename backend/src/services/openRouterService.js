@@ -19,6 +19,9 @@ export const openRouterService = {
       return null;
     }
 
+    const startTime = Date.now();
+    console.log(`[AI] OpenRouter request started: model=${PREFERRED_MODEL}`);
+
     try {
       const response = await axios.post(
         OPENROUTER_API_URL,
@@ -29,7 +32,7 @@ export const openRouterService = {
             { role: 'user', content: userPrompt }
           ],
           temperature,
-          max_tokens: 1500
+          max_tokens: 750 // Optimized: 750 tokens is sufficient for concise structured JSON responses and reduces generation time
         },
         {
           headers: {
@@ -38,21 +41,24 @@ export const openRouterService = {
             'X-Title': 'WeatherGPT',
             'Content-Type': 'application/json'
           },
-          timeout: 25000
+          timeout: 20000
         }
       );
 
+      const elapsed = Date.now() - startTime;
+      console.log(`[AI] OpenRouter response received: ${elapsed}ms`);
+
       const message = response.data?.choices?.[0]?.message;
-      // Some models (reasoning models) return null content with reasoning instead
       const choice = message?.content || message?.reasoning || null;
       return choice ? choice.trim() : null;
     } catch (err) {
+      const elapsed = Date.now() - startTime;
+      console.error(`[AI] OpenRouter API call failed after ${elapsed}ms:`, err.response?.data || err.message);
       const isTransient = err.code === 'ECONNABORTED' || err.code === 'ECONNRESET' || err.code === 'ETIMEDOUT' || err.message?.includes('timeout');
       if (isTransient && _retryCount < 1) {
         console.warn('[OpenRouterService] Transient error, retrying once...', err.message);
         return this.generateCompletion({ systemPrompt, userPrompt, temperature, _retryCount: _retryCount + 1 });
       }
-      console.error('[OpenRouterService] API call failed:', err.response?.data || err.message);
       return null;
     }
   }

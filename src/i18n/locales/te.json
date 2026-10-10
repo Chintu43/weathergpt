@@ -99,6 +99,10 @@
   },
   "home": {
     "greeting": "శుభ దినం",
+    "greetingMorning": "శుభోదయం",
+    "greetingAfternoon": "శుభ మధ్యాహ్నం",
+    "greetingEvening": "శుభ సాయంత్రం",
+    "greetingNight": "శుభరాత్రి",
     "welcomeSub": "ప్రత్యక్ష వాతావరణ పరిస్థితులు మరియు ప్రాంతీయ ముందస్తు అంచనాలు",
     "todaysWeather": "నేటి వాతావరణం",
     "feelsLike": "అనిపిస్తున్న ఉష్ణోగ్రత",

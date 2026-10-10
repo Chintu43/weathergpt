@@ -57,8 +57,7 @@ export const authService = {
   },
 
   async login(email, password, phone) {
-    await new Promise((resolve) => setTimeout(resolve, 200));
-
+    // No artificial artificial sleep delay
     const normalizedEmail = email.trim().toLowerCase();
     const users = getStoredUsers();
     const localUser = users.find(
@@ -103,13 +102,14 @@ export const authService = {
       const targetPhone = phone ? phone.trim() : (syntheticUser.phoneNumber || '');
 
       if (targetPhone) {
-        await this.syncWithBackend({
+        // Non-blocking background sync
+        this.syncWithBackend({
           name: syntheticUser.name,
           email: normalizedEmail,
           phone_number: targetPhone,
           country: 'India',
           role: backendUser.role || 'user'
-        }).catch(() => {}); // non-critical
+        }).catch(() => {});
       }
 
       const session = {
@@ -132,8 +132,8 @@ export const authService = {
     const user = localUser;
     const targetPhone = phone ? phone.trim() : (user.phoneNumber || user.phone || '');
 
-    // Sync user information with backend / Supabase
-    await this.syncWithBackend({
+    // Sync user information with backend in background without blocking login
+    this.syncWithBackend({
       name: user.name,
       email: normalizedEmail,
       phone_number: targetPhone,
@@ -142,7 +142,7 @@ export const authService = {
       state: user.state || null,
       country: user.country || 'India',
       role: user.role || 'user'
-    });
+    }).catch(() => {});
 
     if (phone) {
       user.phoneNumber = targetPhone;
