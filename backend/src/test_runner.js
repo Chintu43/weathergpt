@@ -18,13 +18,15 @@ const server = app.listen(PORT, async () => {
   console.log('RUNNING STRICT TRAVEL PLANNER TEST SUITE (STEPS 27 & 31)');
   console.log('===========================================================\n');
 
-  // TEST 1: Valid Destination (Chennai, 2026-10-02)
-  console.log('--- TEST 1: Valid Destination (Chennai, 2026-10-02) ---');
+  const validDate = new Date(Date.now() + 2 * 86400000).toISOString().split('T')[0];
+
+  // TEST 1: Valid Destination (Chennai)
+  console.log(`--- TEST 1: Valid Destination (Chennai, ${validDate}) ---`);
   try {
     const res = await fetch(TEST_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ destination: 'Chennai, Tamil Nadu', date: '2026-10-02' })
+      body: JSON.stringify({ destination: 'Chennai, Tamil Nadu', date: validDate })
     });
     const status = res.status;
     const body = await res.json();
@@ -46,13 +48,13 @@ const server = app.listen(PORT, async () => {
     console.error('TEST 1 Error:', err.message);
   }
 
-  // TEST 2: Goa on 2026-10-05
-  console.log('--- TEST 2: Distinct Destination (Goa, 2026-10-05) ---');
+  // TEST 2: Goa on validDate
+  console.log(`--- TEST 2: Distinct Destination (Goa, ${validDate}) ---`);
   try {
     const res = await fetch(TEST_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ destination: 'Goa', date: '2026-10-05' })
+      body: JSON.stringify({ destination: 'Goa, India', date: validDate })
     });
     const status = res.status;
     const body = await res.json();
@@ -103,7 +105,7 @@ const server = app.listen(PORT, async () => {
     const res = await fetch(TEST_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ destination: 'Chennai', date: '2026-10-02' })
+      body: JSON.stringify({ destination: 'Chennai', date: validDate })
     });
     const status = res.status;
     const body = await res.json();
@@ -129,7 +131,7 @@ const server = app.listen(PORT, async () => {
     const res = await fetch(TEST_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ destination: 'Chennai', date: '2026-10-02' })
+      body: JSON.stringify({ destination: 'Chennai', date: validDate })
     });
     const status = res.status;
     const body = await res.json();
@@ -154,7 +156,7 @@ const server = app.listen(PORT, async () => {
     const res = await fetch(TEST_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ destination: 'Chennai', date: '2026-10-02' })
+      body: JSON.stringify({ destination: 'Chennai', date: validDate })
     });
     const status = res.status;
     const body = await res.json();
@@ -177,7 +179,7 @@ const server = app.listen(PORT, async () => {
     const res = await fetch(TEST_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ destination: 'Chennai', date: '2026-10-02' })
+      body: JSON.stringify({ destination: 'Chennai', date: validDate })
     });
     const body = await res.json();
     console.log('Official Warning Note:', body.officialWarningNote);
