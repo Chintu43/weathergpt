@@ -21,9 +21,9 @@ router.post('/plan', validateTravelRequest, async (req, res, next) => {
     const { destination, date, language } = req.body;
     const langCode = ['te', 'hi'].includes(language) ? language : 'en';
     const langInstruction = langCode === 'te'
-      ? '\n\nCRITICAL REQUIREMENT: All JSON key names MUST remain strictly in English as defined in the schema above. All user-facing string VALUES inside the JSON object MUST be written entirely in fluent Telugu (తెలుగు).'
+      ? '\n\nCRITICAL REQUIREMENT: Output ONE valid JSON object only (no markdown fences). All JSON key names MUST remain strictly in English as defined in the schema above. All user-facing string VALUES inside the JSON object MUST be written entirely in fluent Telugu (తెలుగు) enclosed in double quotes.'
       : langCode === 'hi'
-        ? '\n\nCRITICAL REQUIREMENT: All JSON key names MUST remain strictly in English as defined in the schema above. All user-facing string VALUES inside the JSON object MUST be written entirely in fluent Hindi (हिंदी).'
+        ? '\n\nCRITICAL REQUIREMENT: Output ONE valid JSON object only (no markdown fences). All JSON key names MUST remain strictly in English as defined in the schema above. All user-facing string VALUES inside the JSON object MUST be written entirely in fluent Hindi (हिंदी) enclosed in double quotes.'
         : '';
     let lat = req.body.latitude ? parseFloat(req.body.latitude) : null;
     let lon = req.body.longitude ? parseFloat(req.body.longitude) : null;

@@ -11,7 +11,14 @@ export const openRouterService = {
    * Returns the raw text response string, or null if the API call fails.
    * Callers (FarmerGPT, Travel Planner) enforce strict no-fallback policy.
    */
-  async generateCompletion({ systemPrompt, userPrompt, temperature = 0.5, _retryCount = 0 }) {
+  async generateCompletion({
+    systemPrompt,
+    userPrompt,
+    temperature = 0.5,
+    maxTokens = 1200,
+    responseFormat = { type: 'json_object' },
+    _retryCount = 0
+  }) {
     const apiKey = process.env.OPENROUTER_API_KEY;
 
     if (!apiKey || !apiKey.trim()) {
@@ -23,17 +30,23 @@ export const openRouterService = {
     console.log(`[AI] OpenRouter request started: model=${PREFERRED_MODEL}`);
 
     try {
+      const requestPayload = {
+        model: PREFERRED_MODEL,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ],
+        temperature,
+        max_tokens: maxTokens || 1200
+      };
+
+      if (responseFormat) {
+        requestPayload.response_format = responseFormat;
+      }
+
       const response = await axios.post(
         OPENROUTER_API_URL,
-        {
-          model: PREFERRED_MODEL,
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt }
-          ],
-          temperature,
-          max_tokens: 750 // Optimized: 750 tokens is sufficient for concise structured JSON responses and reduces generation time
-        },
+        requestPayload,
         {
           headers: {
             Authorization: `Bearer ${apiKey.trim()}`,

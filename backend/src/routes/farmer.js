@@ -5,6 +5,7 @@ import { openRouterService } from '../services/openRouterService.js';
 import { validateFarmerRequest } from '../middleware/validateRequest.js';
 import { detectAgriculturalSeason } from '../utils/seasonDetector.js';
 import { classifyQuestionIntent, analyzeCropSuitability } from '../services/cropSuitabilityEngine.js';
+import { parseAndValidateFarmerAdvice } from '../utils/aiJsonParser.js';
 
 const router = express.Router();
 
@@ -17,19 +18,37 @@ router.post('/advice', validateFarmerRequest, async (req, res, next) => {
   try {
     const { state, district, question, language } = req.body;
     const langCode = ['te', 'hi'].includes(language) ? language : 'en';
-    const langInstruction = langCode === 'te'
-      ? '\n\nCRITICAL REQUIREMENT: All JSON key names MUST remain strictly in English as defined in the schema above. All user-facing string VALUES inside the JSON object MUST be written entirely in fluent Telugu (తెలుగు).'
-      : langCode === 'hi'
-        ? '\n\nCRITICAL REQUIREMENT: All JSON key names MUST remain strictly in English as defined in the schema above. All user-facing string VALUES inside the JSON object MUST be written entirely in fluent Hindi (हिंदी).'
-        : '';
     let lat = req.body.latitude ? parseFloat(req.body.latitude) : null;
     let lon = req.body.longitude ? parseFloat(req.body.longitude) : null;
-
     const currentDateStr = new Date().toISOString().split('T')[0];
 
     // 1. Question Intent Classification
     const questionAnalysis = classifyQuestionIntent(question);
     const { intent, crop, action, timeReference } = questionAnalysis;
+
+    const langInstruction = langCode === 'te'
+      ? `\n\nCRITICAL LANGUAGE & JSON SPECIFICATION:
+- Output ONE valid JSON object only. Do NOT include markdown code fences, comments, or extra text.
+- All JSON key names MUST remain strictly in English matching the schema above.
+- All user-facing string VALUES inside the JSON object ("directAnswer", "weatherAssessment", "timingAssessment", items in "risks", "practicalSteps", "missingInformation"${intent === 'crop_selection' ? ', and "cropCandidates" reasons' : ''}) MUST be written entirely in fluent Telugu (తెలుగు).
+- Every string MUST be enclosed in standard double quotes ("...").
+- Boolean values MUST strictly be the English JSON literals true or false. NEVER translate boolean values into Telugu (NEVER output words like లేదు, కాదు, లేవు, అవును as boolean values).
+- Missing, unknown, or unobserved values MUST strictly be null, never words like లేదు.
+- Enum values for "confidence" ('high', 'medium', 'low'), "crop", and "intent" MUST remain in English.`
+      : langCode === 'hi'
+        ? `\n\nCRITICAL LANGUAGE & JSON SPECIFICATION:
+- Output ONE valid JSON object only. Do NOT include markdown code fences, comments, or extra text.
+- All JSON key names MUST remain strictly in English matching the schema above.
+- All user-facing string VALUES inside the JSON object ("directAnswer", "weatherAssessment", "timingAssessment", items in "risks", "practicalSteps", "missingInformation"${intent === 'crop_selection' ? ', and "cropCandidates" reasons' : ''}) MUST be written entirely in fluent Hindi (हिंदी).
+- Every string MUST be enclosed in standard double quotes ("...").
+- Boolean values MUST strictly be the English JSON literals true or false. NEVER translate boolean values into Hindi (NEVER output words like नहीं, ना, हाँ as boolean values).
+- Missing, unknown, or unobserved values MUST strictly be null, never words like नहीं.
+- Enum values for "confidence" ('high', 'medium', 'low'), "crop", and "intent" MUST remain in English.`
+        : `\n\nCRITICAL JSON SPECIFICATION:
+- Output ONE valid JSON object only. Do NOT include markdown code fences, comments, or extra text.
+- Every string MUST be enclosed in standard double quotes.
+- Boolean values MUST strictly be true or false.
+- Missing values MUST strictly be null.`;
 
     // Required Backend Logs (Requirement 17)
     console.log(`[FarmerGPT] Request received`);
@@ -177,7 +196,7 @@ Do not create unrelated crop rankings.
 
 Do not produce generic farming advice unrelated to the question.
 
-MUST RESPOND strictly in JSON format matching this schema:
+MUST RESPOND strictly with EXACTLY ONE valid JSON object matching this schema (NO markdown code fences, NO comments, NO text before or after):
 {
   "directAnswer": "Direct, clear answer addressing the question in the first paragraph.",
   "crop": "${crop || 'none'}",
@@ -194,8 +213,16 @@ MUST RESPOND strictly in JSON format matching this schema:
     const userPrompt = JSON.stringify(structuredContext, null, 2);
 
     // 7. Call OpenRouter AI — STRICT: no fallback, fail hard
-    console.log(`[FarmerGPT] Sending structured agricultural context to OpenRouter`);
-    const rawAiOutput = await openRouterService.generateCompletion({ systemPrompt, userPrompt, temperature: 0.3 });
+    const startTimeAi = Date.now();
+    console.log(`[FarmerGPT] Calling OpenRouter AI for agricultural advice (attempt 1)`);
+    const rawAiOutput = await openRouterService.generateCompletion({
+      systemPrompt,
+      userPrompt,
+      temperature: 0.3,
+      maxTokens: 1200
+    });
+    const aiDuration = Date.now() - startTimeAi;
+    console.log(`[FarmerGPT] OpenRouter attempt 1 completed in ${aiDuration}ms`);
 
     if (!rawAiOutput) {
       console.error(`[FarmerGPT] OpenRouter response was empty or null`);
@@ -206,30 +233,77 @@ MUST RESPOND strictly in JSON format matching this schema:
       });
     }
 
-    // 8. Parse JSON response from OpenRouter
-    let parsedAdvice = null;
-    let cleanedText = rawAiOutput.replace(/```json/gi, '').replace(/```/g, '').trim();
-    const firstBrace = cleanedText.indexOf('{');
-    const lastBrace = cleanedText.lastIndexOf('}');
-    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-      cleanedText = cleanedText.substring(firstBrace, lastBrace + 1);
-    }
+    // 8. Robust JSON Parsing, Schema Validation & Controlled Single Retry
+    let parseResult = parseAndValidateFarmerAdvice(rawAiOutput, intent);
+    let retryCount = 0;
 
-    try {
-      parsedAdvice = JSON.parse(cleanedText);
-    } catch (parseErr1) {
-      try {
-        const sanitized = cleanedText.replace(/[\r\n\t]/g, ' ');
-        parsedAdvice = JSON.parse(sanitized);
-      } catch (parseErr2) {
-        console.error(`[FarmerGPT] JSON parsing failed for OpenRouter output:`, parseErr2.message);
-        return res.status(502).json({
-          success: false,
-          error: 'AI_ANALYSIS_FAILED',
-          message: 'Weather analysis failed. Please try again.'
-        });
+    if (!parseResult.success) {
+      console.warn(`[FarmerGPT] AI JSON parsing failed on attempt 1 (${parseResult.error}). Triggering controlled retry...`);
+      retryCount = 1;
+
+      const targetLanguageName = langCode === 'te' ? 'Telugu (తెలుగు)' : langCode === 'hi' ? 'Hindi (हिंदी)' : 'English';
+      const correctionSystemPrompt = `You are a strict JSON correction assistant for FarmerGPT.
+Your task is to fix the previous output into EXACTLY ONE valid, well-formed JSON object matching the schema below.
+
+STRICT JSON SYNTAX RULES:
+1. Return EXACTLY ONE valid JSON object starting with '{' and ending with '}'.
+2. Absolutely NO markdown code fences (do NOT use \`\`\`json or \`\`\`), no conversational text before or after.
+3. Every string value MUST be enclosed in standard double quotes ("...").
+4. Boolean values MUST strictly be the English literals true or false. NEVER translate booleans into words like లేదు, కాదు, हाँ, or नहीं.
+5. Missing or unknown values MUST strictly be null, NEVER unquoted words.
+6. All JSON key names MUST remain strictly in English matching the schema.
+7. User-facing advice text must remain in ${targetLanguageName}.
+
+REQUIRED SCHEMA:
+{
+  "directAnswer": "Direct, clear answer addressing the question in the first paragraph.",
+  "crop": "${crop || 'none'}",
+  "intent": "${intent}",
+  "weatherAssessment": "Relevant weather assessment.",
+  "timingAssessment": "Assessment of sowing timing.",
+  "risks": ["Risk bullet 1", "Risk bullet 2"],
+  "practicalSteps": ["Actionable step 1", "Actionable step 2"],
+  "missingInformation": ["Missing information 1"],
+  "confidence": "medium",
+  "officialAdvisoryAvailable": false${intent === 'crop_selection' ? ',\n  "cropCandidates": [\n    { "name": "Crop Name", "suitability": "Highly suitable", "reason": "Reason details" }\n  ]' : ''}
+}`;
+
+      const correctionUserPrompt = `The previous response failed JSON parsing with error: "${parseResult.error}".
+Here is the previous raw output:
+${rawAiOutput}
+
+Return ONLY the corrected, valid JSON object matching the required schema.`;
+
+      const startTimeRetry = Date.now();
+      console.log(`[FarmerGPT] Calling OpenRouter AI for JSON correction (attempt 2, retry 1)`);
+      const retryAiOutput = await openRouterService.generateCompletion({
+        systemPrompt: correctionSystemPrompt,
+        userPrompt: correctionUserPrompt,
+        temperature: 0.1,
+        maxTokens: 1200
+      });
+      const retryDuration = Date.now() - startTimeRetry;
+      console.log(`[FarmerGPT] OpenRouter attempt 2 completed in ${retryDuration}ms`);
+
+      if (retryAiOutput) {
+        parseResult = parseAndValidateFarmerAdvice(retryAiOutput, intent);
+      } else {
+        parseResult = { success: false, error: 'Empty response on retry' };
       }
     }
+
+    if (!parseResult.success) {
+      console.error(`[FarmerGPT] JSON parsing failed after retry: ${parseResult.error}`);
+      return res.status(502).json({
+        success: false,
+        error: 'AI_ANALYSIS_FAILED',
+        message: 'Weather analysis failed. Please try again.',
+        details: `Malformed AI response after retry: ${parseResult.error}`
+      });
+    }
+
+    console.log(`[FarmerGPT] AI JSON parsing and validation succeeded (retries: ${retryCount})`);
+    const parsedAdvice = parseResult.data;
 
     console.log(`[FarmerGPT] OpenRouter analysis received`);
     console.log(`[FarmerGPT] FarmerGPT completed successfully`);
