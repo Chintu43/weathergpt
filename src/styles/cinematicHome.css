@@ -1110,12 +1110,12 @@
 @media (max-width: 640px) {
   .home-fixed-header {
     height: auto;
-    min-height: 56px;
+    min-height: 54px;
     padding: 6px 10px;
   }
 
   .home-cinematic-stage {
-    padding-top: 76px; /* Ensure greeting is never hidden beneath header */
+    padding-top: 74px; /* Ensure greeting is completely visible below the fixed header */
     padding-bottom: 84px;
     padding-left: 12px;
     padding-right: 12px;
@@ -1125,21 +1125,28 @@
     flex-wrap: nowrap;
     gap: 8px;
     justify-content: space-between;
+    align-items: center;
   }
 
   .fixed-header-brand {
     gap: 6px;
     min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
   }
 
   .brand-sun-svg {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
   }
 
   .dash-brand-title {
-    font-size: 0.95rem;
+    font-size: clamp(0.78rem, 3.2vw, 0.95rem);
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
   }
 
   .dash-brand-sub {
@@ -1149,16 +1156,21 @@
   .fixed-header-actions {
     gap: 4px;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
   }
 
   .dash-icon-btn {
-    width: 32px;
-    height: 32px;
-    padding: 6px;
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .dash-sync-btn {
-    padding: 6px 8px;
+    padding: 5px 8px;
   }
 
   .dash-sync-btn span {
@@ -1166,16 +1178,20 @@
   }
 
   .dash-location-badge {
-    padding: 4px 8px;
-    font-size: 0.72rem;
-    max-width: 90px;
+    padding: 4px 7px;
+    font-size: 0.70rem;
+    max-width: 82px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
+  /* Search Bar: Flexible layout */
   .s0-search-area .dash-search-bar {
     display: flex;
     flex-wrap: wrap;
     border-radius: 18px;
-    padding: 6px 10px;
+    padding: 6px 8px;
     gap: 6px;
     align-items: center;
   }
@@ -1186,55 +1202,76 @@
     flex: 1 1 100%;
     order: 1;
     font-size: 0.85rem;
+    padding: 2px 4px;
   }
 
   .dash-search-submit {
     order: 2;
-    flex: 1 1 0;
-    min-width: 80px;
+    flex: 1 1 auto;
+    min-width: 75px;
     padding: 6px 10px;
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     text-align: center;
     justify-content: center;
+    white-space: nowrap;
   }
 
   .dash-current-loc-btn {
     order: 3;
-    flex: 1 1 0;
-    min-width: 120px;
+    flex: 1.5 1 auto;
+    min-width: 110px;
     justify-content: center;
-    padding: 6px 10px;
-    font-size: 0.75rem;
+    padding: 6px 8px;
+    font-size: 0.74rem;
     white-space: nowrap;
   }
 }
 
 @media (max-width: 480px) {
   .home-fixed-header {
-    min-height: 52px;
-    padding: 5px 8px;
+    min-height: 50px;
+    padding: 4px 8px;
   }
 
   .home-cinematic-stage {
-    padding-top: 72px;
+    padding-top: 70px;
     padding-left: 8px;
     padding-right: 8px;
-    padding-bottom: 80px;
+    padding-bottom: 78px;
+  }
+
+  .fixed-header-inner {
+    gap: 6px;
+  }
+
+  .fixed-header-brand {
+    gap: 5px;
   }
 
   .dash-brand-title {
-    font-size: 0.88rem;
+    font-size: clamp(0.72rem, 3.4vw, 0.85rem);
+    letter-spacing: -0.01em;
   }
 
   .brand-sun-svg {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
+  }
+
+  .fixed-header-actions {
+    gap: 3px;
   }
 
   .dash-icon-btn {
-    width: 28px;
-    height: 28px;
-    padding: 5px;
+    width: 27px;
+    height: 27px;
+    padding: 4px;
+  }
+
+  .dash-location-badge {
+    padding: 3px 6px;
+    font-size: 0.65rem;
+    max-width: 65px;
   }
 
   .s0-greeting-heading {
@@ -1277,6 +1314,73 @@
   .nav-dot-btn {
     width: 6px;
     height: 6px;
+  }
+}
+
+@media (max-width: 380px) {
+  .home-fixed-header {
+    padding: 4px 6px;
+  }
+
+  .fixed-header-inner {
+    gap: 4px;
+  }
+
+  .dash-brand-title {
+    font-size: 0.72rem;
+  }
+
+  .brand-sun-svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .fixed-header-actions {
+    gap: 2px;
+  }
+
+  .dash-icon-btn {
+    width: 25px;
+    height: 25px;
+    padding: 3px;
+  }
+
+  .dash-location-badge {
+    display: none; /* Hide location badge on sub-380px to prevent control overlap; location is shown in S0 content */
+  }
+
+  .s0-search-area .dash-search-bar {
+    padding: 5px 6px;
+    gap: 4px;
+  }
+
+  .dash-search-submit {
+    min-width: 65px;
+    padding: 5px 8px;
+    font-size: 0.72rem;
+  }
+
+  .dash-current-loc-btn {
+    min-width: 95px;
+    padding: 5px 6px;
+    font-size: 0.70rem;
+  }
+}
+
+@media (max-width: 330px) {
+  .dash-brand-title {
+    font-size: 0.65rem;
+  }
+
+  .brand-sun-svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .dash-icon-btn {
+    width: 23px;
+    height: 23px;
+    padding: 2px;
   }
 }
 

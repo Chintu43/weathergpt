@@ -1346,10 +1346,19 @@ h1, h2, h3, h4, h5, h6 {
   min-height: 58px;
 }
 
-/* Mobile tap subtle scale animation */
+/* Mobile tap subtle scale animation & active state feedback */
 .bottom-nav-item:active {
-  transform: scale(0.93);
-  transition: transform 0.08s ease;
+  transform: scale(0.92);
+  background: rgba(255, 255, 255, 0.08);
+  transition: transform 0.08s ease, background 0.08s ease;
+}
+
+/* Accessible keyboard focus visible */
+.bottom-nav-item:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+  background: rgba(56, 189, 248, 0.12);
+  border-radius: 16px;
 }
 
 .bottom-nav-item.is-active {
