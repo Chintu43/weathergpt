@@ -141,14 +141,18 @@ router.post('/admin-login', async (req, res) => {
     }
 
     // 3. Admin Password Verification using secure bcrypt hash
+    // Primary: verify against database password_hash (Supabase public.users)
     const adminEnvEmail = (process.env.ADMIN_EMAIL || '').trim().toLowerCase();
     const adminEnvHash = (process.env.ADMIN_PASSWORD_HASH || '').trim();
     let isPasswordValid = false;
 
-    if (adminEnvEmail && normalizedEmail === adminEnvEmail && adminEnvHash) {
-      isPasswordValid = await bcrypt.compare(password, adminEnvHash);
-    } else if (dbUser.password) {
+    if (dbUser.password) {
       isPasswordValid = await bcrypt.compare(password, dbUser.password);
+    }
+
+    // Fallback: If not matched in database, check environment ADMIN_PASSWORD_HASH
+    if (!isPasswordValid && adminEnvEmail && normalizedEmail === adminEnvEmail && adminEnvHash) {
+      isPasswordValid = await bcrypt.compare(password, adminEnvHash);
     }
 
     if (!isPasswordValid) {
